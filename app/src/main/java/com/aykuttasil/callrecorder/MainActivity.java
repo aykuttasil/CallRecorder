@@ -1,19 +1,43 @@
 package com.aykuttasil.callrecorder;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 
-import com.aykuttasil.callrecorder.service.CallRecordService;
+import com.aykuttasil.callrecord.CallRecord;
 
 public class MainActivity extends AppCompatActivity {
+
+    CallRecord callRecord;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Intent intent = new Intent(this, CallRecordService.class);
-        startService(intent);
+        //callRecord = CallRecord.init(this);
+
+        /*
+        callRecord = new CallRecord.Builder(this)
+                .setRecordFileName("DenemeKayit")
+                .setRecordDirName("CallRecordDir")
+                .build();
+        */
+
+        callRecord = new CallRecord.Builder(this)
+                .setRecordDirName("ServiceRecordDirName")
+                .setRecordFileName("ServiceRecordFileName")
+                .buildService();
+
+        callRecord.startCallRecordService();
+
+    }
+
+    public void StartCallRecordClick(View view) {
+        callRecord.startCallReceiver();
+    }
+
+    public void StopCallRecordClick(View view) {
+        callRecord.stopCallReceiver();
     }
 }

@@ -1,0 +1,79 @@
+allprojects {
+    repositories {
+        jcenter()
+        mavenCentral()
+        mavenLocal()
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        maven { url "https://jitpack.io" }
+        maven { url "http://dl.bintray.com/android/android-tools" }
+        maven { url 'https://maven.fabric.io/public' }
+        maven { url "https://jcenter.bintray.com" }
+    }
+}
+
+apply plugin: 'com.android.library'
+
+android {
+
+    compileSdkVersion project.sdk
+    buildToolsVersion project.buildTools
+
+    defaultConfig {
+        minSdkVersion project.minSdk
+        targetSdkVersion project.sdk
+        versionCode project.libraryVersionCode
+        versionName project.libraryVersion
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile 'com.android.support:appcompat-v7:25.0.0'
+    testCompile 'junit:junit:4.12'
+}
+
+
+ext {
+    bintrayRepo = 'maven'
+    bintrayName = 'PercentBar'
+    orgName = 'aykuttasil'
+
+    publishedGroupId = 'com.aykuttasil'
+    libraryName = 'CallRecord'
+    artifact = 'callrecord' // module ile aynı isimde olması gerekiyor
+
+    libraryDescription = 'Call Record'
+
+    siteUrl = 'https://github.com/aykuttasil/CallRecorder'
+    gitUrl = 'https://github.com/aykuttasil/CallRecorder.git'
+
+    libraryVersion = rootProject.ext.libraryVersion
+
+    developerId = 'aykuttasil'
+    developerName = 'Aykut Asil'
+    developerEmail = 'aykuttasil@gmail.com'
+
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+}
+
+if (project.rootProject.file('local.properties').exists()) {
+    apply from: rootProject.file('gradle/install-v1.gradle')
+    apply from: rootProject.file('gradle/bintray-android-v1.gradle')
+}
+
+
+// ./gradlew clean install bintrayUpload
