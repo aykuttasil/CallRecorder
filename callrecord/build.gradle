@@ -47,7 +47,7 @@ dependencies {
 
 ext {
     bintrayRepo = 'maven'
-    bintrayName = 'PercentBar'
+    bintrayName = 'CallRecord'
     orgName = 'aykuttasil'
 
     publishedGroupId = 'com.aykuttasil'
