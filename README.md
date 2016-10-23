@@ -1,5 +1,7 @@
 # Anroid Call Recorder
 
+[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-Call%20Recorder-brightgreen.svg?style=flat)](http://android-arsenal.com/details/1/4544)
+
 Android incomig and outgoing call recorder at any time.
 
 # How to Use
