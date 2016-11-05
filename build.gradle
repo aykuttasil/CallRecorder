@@ -22,10 +22,10 @@ task clean(type: Delete) {
 }
 
 ext {
-    sdk = 24
+    sdk = 25
     buildTools = "24.0.3"
     minSdk = 17
-    libraryVersion = "1.0.1"
-    libraryVersionCode = 2
-    supportVersion = "24.2.1"
+    libraryVersion = "1.0.2"
+    libraryVersionCode = 3
+    supportVersion = "25.0.0"
 }
