@@ -9,11 +9,10 @@ import android.os.Environment;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import com.aykuttasil.callrecord.CallRecord;
+
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 /**
  * Created by aykutasil on 19.10.2016.
@@ -31,28 +30,15 @@ public class CallRecordReceiver extends BroadcastReceiver {
     Bundle bundle;
     File audiofile;
 
+
+    private CallRecord.Builder mBuilder;
     private String inCall, outCall, state;
-    private String fileName, dirName;
 
     public CallRecordReceiver() {
-        //setFileName(fileName);
-        //setDirName(dirName);
     }
 
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
-
-    public String getFileName() {
-        return fileName;
-    }
-
-    public void setDirName(String dirName) {
-        this.dirName = dirName;
-    }
-
-    public String getDirName() {
-        return dirName;
+    public void setmBuilder(CallRecord.Builder mBuilder) {
+        this.mBuilder = mBuilder;
     }
 
     @Override
@@ -94,7 +80,6 @@ public class CallRecordReceiver extends BroadcastReceiver {
                         recordstarted = false;
                         Log.i(TAG, "stop record");
                     }
-
                 }
 
             } else if (intent.getAction().equals(ACTION_OUT)) {
@@ -112,34 +97,65 @@ public class CallRecordReceiver extends BroadcastReceiver {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
 
     private void startRecord(String seed) {
 
         try {
-            String dateString = new SimpleDateFormat("dd-MM-yyyy HH-mm-ss", Locale.US).format(new Date());
-            File sampleDir = new File(Environment.getExternalStorageDirectory(), "/" + getDirName());
+
+            //String dateString = getSimpleDateFormat().format(new Date());
+
+            File sampleDir = new File(Environment.getExternalStorageDirectory(), "/" + mBuilder.getRecordDirName());
             if (!sampleDir.exists()) {
                 sampleDir.mkdirs();
             }
-            String file_name = getFileName() + "_" + seed + "_" + dateString;
-            audiofile = File.createTempFile(file_name, ".amr", sampleDir);
+
+            String file_name = "";
+            if (mBuilder.isShowSeed()) {
+                file_name = mBuilder.getRecordFileName() + "_" + seed + "_"; // temp dosyaya kayıt edildiği için dosya isminin en sonuna random karakter ekleniyor
+            } else {
+                file_name = mBuilder.getRecordFileName();
+            }
+
+            String suffix = "";
+            switch (mBuilder.getOutputFormat()) {
+                case MediaRecorder.OutputFormat.AMR_NB: {
+                    suffix = ".amr";
+                    break;
+                }
+                case MediaRecorder.OutputFormat.AMR_WB: {
+                    suffix = ".amr";
+                    break;
+                }
+                case MediaRecorder.OutputFormat.MPEG_4: {
+                    suffix = ".mp4";
+                    break;
+                }
+                case MediaRecorder.OutputFormat.THREE_GPP: {
+                    suffix = ".3gp";
+                    break;
+                }
+                default: {
+                    suffix = ".amr";
+                    break;
+                }
+            }
+
+            audiofile = File.createTempFile(file_name, suffix, sampleDir);
 
             recorder = new MediaRecorder();
-            recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION);
-            recorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
-            recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+            recorder.setAudioSource(mBuilder.getAudioSource());
+            recorder.setOutputFormat(mBuilder.getOutputFormat());
+            recorder.setAudioEncoder(mBuilder.getAudioEncoder());
             recorder.setOutputFile(audiofile.getAbsolutePath());
-
             recorder.prepare();
+
         } catch (IllegalStateException | IOException e) {
             e.printStackTrace();
         }
         recorder.start();
         recordstarted = true;
         Log.i(TAG, "record start");
-
     }
+
 }
