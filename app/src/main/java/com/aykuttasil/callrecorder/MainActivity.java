@@ -8,6 +8,8 @@ import android.view.View;
 
 import com.aykuttasil.callrecord.CallRecord;
 
+import java.util.Locale;
+
 public class MainActivity extends AppCompatActivity {
 
     CallRecord callRecord;
@@ -32,8 +34,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         callRecord = new CallRecord.Builder(this)
-                .setRecordFileName("TryCallFile")
-                .setRecordDirName("AykutAsilCallRecord")
+                .setRecordFileName("CallRecordFile")
+                .setRecordDirName("Record_" + new java.text.SimpleDateFormat("dd-MM-yyyy HH-mm-ss", Locale.US))
                 .setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
                 .setOutputFormat(MediaRecorder.OutputFormat.AMR_NB)
                 .setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION)
