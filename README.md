@@ -43,7 +43,7 @@ If you wish run in Service;
                 .setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB) // optional & default value
                 .setOutputFormat(MediaRecorder.OutputFormat.AMR_NB) // optional & default value
                 .setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION) // optional & default value
-                .setShowSeed(true) // optional & default value
+                .setShowSeed(true) // optional & default value -> RecordFileName_incoming || RecordFileName_outgoing
                 .buildService();
 
             callRecord.startCallRecordService();
