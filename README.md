@@ -13,7 +13,7 @@ Android incomig and outgoing call recorder at any time.
                 .setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB) // optional & default value
                 .setOutputFormat(MediaRecorder.OutputFormat.AMR_NB) // optional & default value
                 .setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION) // optional & default value
-                .setShowSeed(true) // optional & default value
+                .setShowSeed(true) // optional & default value ->Ex: RecordFileName_incoming.amr || RecordFileName_outgoing.amr
                 .build();
                 
         callRecord.startCallReceiver();
@@ -43,7 +43,7 @@ If you wish run in Service;
                 .setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB) // optional & default value
                 .setOutputFormat(MediaRecorder.OutputFormat.AMR_NB) // optional & default value
                 .setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION) // optional & default value
-                .setShowSeed(true) // optional & default value -> RecordFileName_incoming || RecordFileName_outgoing
+                .setShowSeed(true) // optional & default value ->Ex: RecordFileName_incoming.amr || RecordFileName_outgoing.amr
                 .buildService();
 
             callRecord.startCallRecordService();
