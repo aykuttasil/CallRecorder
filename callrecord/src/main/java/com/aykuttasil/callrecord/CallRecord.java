@@ -23,7 +23,6 @@ public class CallRecord {
     public static String INTENT_FILE_NAME = "CallRecordFileName";
     public static String INTENT_DIR_NAME = "CallRecordDirName";
     public static String INTENT_SHOW_SEED = "CallRecordShowSeed";
-    public static String INTENT_SIMPLE_DATE_FORMAT = "CallRecordSimpleDateFormat";
     public static String INTENT_AUDIO_SOURCE = "CallRecorAudioSource";
     public static String INTENT_AUDIO_ENCODER = "CallRecordAudioEncode";
     public static String INTENT_OUTPUT_FORMAT = "CallRecordOutputSource";
@@ -32,11 +31,6 @@ public class CallRecord {
     private CallRecordReceiver mCallRecordReceiver;
     private Builder mBuilder;
     private Intent intent;
-
-    private CallRecord(Context context) {
-        this.mContext = context;
-        this.mCallRecordReceiver = new CallRecordReceiver();
-    }
 
     private CallRecord(Context context, Builder builder) {
         this.mContext = context;
@@ -107,7 +101,6 @@ public class CallRecord {
         private int audioEncoder;
         private int outputFormat;
         private boolean showSeed;
-        private SimpleDateFormat simpleDateFormat;
 
         public Builder(Context context) {
             this.context = context;
@@ -117,7 +110,6 @@ public class CallRecord {
             this.audioEncoder = MediaRecorder.AudioEncoder.AMR_NB;
             this.outputFormat = MediaRecorder.OutputFormat.AMR_NB;
             this.showSeed = true;
-            this.simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH-mm-ss", Locale.US);
         }
 
         public CallRecord build() {
@@ -128,7 +120,6 @@ public class CallRecord {
             Intent intent = new Intent();
             intent.putExtra(INTENT_FILE_NAME, getRecordFileName());
             intent.putExtra(INTENT_DIR_NAME, getRecordDirName());
-            intent.putExtra(INTENT_SIMPLE_DATE_FORMAT, getSimpleDateFormat());
             intent.putExtra(INTENT_AUDIO_ENCODER, getAudioEncoder());
             intent.putExtra(INTENT_AUDIO_SOURCE, getAudioSource());
             intent.putExtra(INTENT_OUTPUT_FORMAT, getOutputFormat());
@@ -191,13 +182,5 @@ public class CallRecord {
             return this;
         }
 
-        public SimpleDateFormat getSimpleDateFormat() {
-            return simpleDateFormat;
-        }
-
-        public Builder setSimpleDateFormat(SimpleDateFormat simpleDateFormat) {
-            this.simpleDateFormat = simpleDateFormat;
-            return this;
-        }
     }
 }
