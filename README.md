@@ -10,6 +10,7 @@ Android incomig and outgoing call recorder at any time.
         callRecord = new CallRecord.Builder(this)
                 .setRecordFileName("RecordFileName")
                 .setRecordDirName("RecordDirName")
+                .setRecordDirPath(Environment.getExternalStorageDirectory().getPath()) // optional & default value
                 .setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB) // optional & default value
                 .setOutputFormat(MediaRecorder.OutputFormat.AMR_NB) // optional & default value
                 .setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION) // optional & default value
