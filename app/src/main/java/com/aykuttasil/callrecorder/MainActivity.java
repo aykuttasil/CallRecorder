@@ -2,15 +2,20 @@ package com.aykuttasil.callrecorder;
 
 import android.media.MediaRecorder;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
 import com.aykuttasil.callrecord.CallRecord;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
+
+    private static String TAG = MainActivity.class.getSimpleName();
 
     CallRecord callRecord;
 
@@ -32,10 +37,15 @@ public class MainActivity extends AppCompatActivity {
                 .build();
          */
 
+        Log.i(TAG, Environment.DIRECTORY_DOWNLOADS);
+        Log.i(TAG, Environment.DIRECTORY_DCIM);
+        Log.i(TAG, Environment.getExternalStorageDirectory().getPath());
+        Log.i(TAG, Environment.getRootDirectory().getPath());
 
         callRecord = new CallRecord.Builder(this)
-                .setRecordFileName("CallRecordFile")
-                .setRecordDirName("Record_" + new java.text.SimpleDateFormat("dd-MM-yyyy HH-mm-ss", Locale.US))
+                .setRecordFileName("Record_" + new SimpleDateFormat("ddMMyyyyHHmmss", Locale.US).format(new Date()))
+                .setRecordDirName("CallRecord")
+                .setRecordDirPath(Environment.getExternalStorageDirectory().getPath())
                 .setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
                 .setOutputFormat(MediaRecorder.OutputFormat.AMR_NB)
                 .setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION)

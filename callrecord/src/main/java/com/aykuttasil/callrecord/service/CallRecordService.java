@@ -38,6 +38,7 @@ public class CallRecordService extends Service {
         mCallRecord = new CallRecord.Builder(this)
                 .setRecordFileName(intent.getStringExtra(CallRecord.INTENT_FILE_NAME))
                 .setRecordDirName(intent.getStringExtra(CallRecord.INTENT_DIR_NAME))
+                .setRecordDirPath(intent.getStringExtra(CallRecord.INTENT_DIR_PATH))
                 .setAudioEncoder(intent.getIntExtra(CallRecord.INTENT_AUDIO_ENCODER, MediaRecorder.AudioEncoder.AMR_NB))
                 .setAudioSource(intent.getIntExtra(CallRecord.INTENT_AUDIO_SOURCE, MediaRecorder.AudioSource.VOICE_COMMUNICATION))
                 .setOutputFormat(intent.getIntExtra(CallRecord.INTENT_OUTPUT_FORMAT, MediaRecorder.OutputFormat.AMR_NB))

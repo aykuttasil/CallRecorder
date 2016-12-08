@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.MediaRecorder;
 import android.os.Bundle;
-import android.os.Environment;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
@@ -105,7 +104,7 @@ public class CallRecordReceiver extends BroadcastReceiver {
 
             //String dateString = getSimpleDateFormat().format(new Date());
 
-            File sampleDir = new File(Environment.getExternalStorageDirectory(), "/" + mBuilder.getRecordDirName());
+            File sampleDir = new File(mBuilder.getRecordDirPath() + "/" + mBuilder.getRecordDirName());
             if (!sampleDir.exists()) {
                 sampleDir.mkdirs();
             }

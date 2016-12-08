@@ -4,13 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.MediaRecorder;
+import android.os.Environment;
 import android.util.Log;
 
 import com.aykuttasil.callrecord.receiver.CallRecordReceiver;
 import com.aykuttasil.callrecord.service.CallRecordService;
-
-import java.text.SimpleDateFormat;
-import java.util.Locale;
 
 /**
  * Created by aykutasil on 20.10.2016.
@@ -22,6 +20,7 @@ public class CallRecord {
 
     public static String INTENT_FILE_NAME = "CallRecordFileName";
     public static String INTENT_DIR_NAME = "CallRecordDirName";
+    public static String INTENT_DIR_PATH = "CallRecordDirPath";
     public static String INTENT_SHOW_SEED = "CallRecordShowSeed";
     public static String INTENT_AUDIO_SOURCE = "CallRecorAudioSource";
     public static String INTENT_AUDIO_ENCODER = "CallRecordAudioEncode";
@@ -97,6 +96,7 @@ public class CallRecord {
         private Context context;
         private String recordFileName;
         private String recordDirName;
+        private String recordDirPath;
         private int audioSource;
         private int audioEncoder;
         private int outputFormat;
@@ -106,6 +106,7 @@ public class CallRecord {
             this.context = context;
             this.recordFileName = "Record";
             this.recordDirName = "CallRecord";
+            this.recordDirPath = Environment.getExternalStorageDirectory().getPath();
             this.audioSource = MediaRecorder.AudioSource.VOICE_COMMUNICATION;
             this.audioEncoder = MediaRecorder.AudioEncoder.AMR_NB;
             this.outputFormat = MediaRecorder.OutputFormat.AMR_NB;
@@ -120,6 +121,7 @@ public class CallRecord {
             Intent intent = new Intent();
             intent.putExtra(INTENT_FILE_NAME, getRecordFileName());
             intent.putExtra(INTENT_DIR_NAME, getRecordDirName());
+            intent.putExtra(INTENT_DIR_PATH, getRecordDirPath());
             intent.putExtra(INTENT_AUDIO_ENCODER, getAudioEncoder());
             intent.putExtra(INTENT_AUDIO_SOURCE, getAudioSource());
             intent.putExtra(INTENT_OUTPUT_FORMAT, getOutputFormat());
@@ -182,5 +184,13 @@ public class CallRecord {
             return this;
         }
 
+        public String getRecordDirPath() {
+            return recordDirPath;
+        }
+
+        public Builder setRecordDirPath(String recordDirPath) {
+            this.recordDirPath = recordDirPath;
+            return this;
+        }
     }
 }
