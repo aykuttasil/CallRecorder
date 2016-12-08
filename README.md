@@ -40,6 +40,7 @@ If you wish run in Service;
             callRecord = new CallRecord.Builder(this)
                 .setRecordFileName("RecordFileName")
                 .setRecordDirName("RecordDirName")
+                .setRecordDirPath(Environment.getExternalStorageDirectory().getPath()) // optional & default value
                 .setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB) // optional & default value
                 .setOutputFormat(MediaRecorder.OutputFormat.AMR_NB) // optional & default value
                 .setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION) // optional & default value
@@ -58,7 +59,7 @@ Gradle
 Add it as a dependency in your app's build.gradle file
 
 ```
-compile 'com.aykuttasil:callrecord:1.1.0'
+compile 'com.aykuttasil:callrecord:1.1.1'
 
 ```
 
