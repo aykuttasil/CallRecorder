@@ -9,6 +9,7 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import com.aykuttasil.callrecord.CallRecord;
+import com.aykuttasil.callrecord.helper.PrefsHelper;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,6 +31,7 @@ public class CallRecordReceiver extends BroadcastReceiver {
     File audiofile;
 
 
+    Context mContext;
     private CallRecord.Builder mBuilder;
     private String inCall, outCall, state;
 
@@ -45,6 +47,8 @@ public class CallRecordReceiver extends BroadcastReceiver {
 
         try {
 
+            this.mContext = context;
+
             if ((bundle = intent.getExtras()) == null) {
                 Log.e(TAG, "Intent extras are null");
                 return;
@@ -54,7 +58,7 @@ public class CallRecordReceiver extends BroadcastReceiver {
             Log.i(TAG, state == null ? "null" : state);
 
             if (intent.getAction().equals(ACTION_IN)) {
-                Log.i(TAG, "android.intent.action.PHONE_STATE");
+                Log.i(TAG, ACTION_IN);
 
                 if (state.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
 
@@ -82,7 +86,7 @@ public class CallRecordReceiver extends BroadcastReceiver {
                 }
 
             } else if (intent.getAction().equals(ACTION_OUT)) {
-                Log.i(TAG, "android.intent.action.NEW_OUTGOING_CALL");
+                Log.i(TAG, ACTION_OUT);
 
                 if ((bundle = intent.getExtras()) != null) {
                     outCall = intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER);
@@ -102,7 +106,13 @@ public class CallRecordReceiver extends BroadcastReceiver {
 
         try {
 
-            //String dateString = getSimpleDateFormat().format(new Date());
+            boolean isSaveFile = PrefsHelper.readPrefBool(mContext, CallRecord.PREF_SAVE_FILE);
+            Log.i(TAG, "isSaveFile: " + isSaveFile);
+
+            // dosya kayıt edilsin mi?
+            if (!isSaveFile) {
+                return;
+            }
 
             File sampleDir = new File(mBuilder.getRecordDirPath() + "/" + mBuilder.getRecordDirName());
             if (!sampleDir.exists()) {
@@ -152,6 +162,7 @@ public class CallRecordReceiver extends BroadcastReceiver {
         } catch (IllegalStateException | IOException e) {
             e.printStackTrace();
         }
+
         recorder.start();
         recordstarted = true;
         Log.i(TAG, "record start");

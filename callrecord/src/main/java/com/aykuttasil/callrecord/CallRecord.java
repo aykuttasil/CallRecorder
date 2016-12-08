@@ -7,6 +7,7 @@ import android.media.MediaRecorder;
 import android.os.Environment;
 import android.util.Log;
 
+import com.aykuttasil.callrecord.helper.PrefsHelper;
 import com.aykuttasil.callrecord.receiver.CallRecordReceiver;
 import com.aykuttasil.callrecord.service.CallRecordService;
 
@@ -18,6 +19,8 @@ public class CallRecord {
 
     private static final String TAG = CallRecord.class.getSimpleName();
 
+    public static final String PREF_SAVE_FILE = "PrefSaveFile";
+
     public static String INTENT_FILE_NAME = "CallRecordFileName";
     public static String INTENT_DIR_NAME = "CallRecordDirName";
     public static String INTENT_DIR_PATH = "CallRecordDirPath";
@@ -25,6 +28,7 @@ public class CallRecord {
     public static String INTENT_AUDIO_SOURCE = "CallRecorAudioSource";
     public static String INTENT_AUDIO_ENCODER = "CallRecordAudioEncode";
     public static String INTENT_OUTPUT_FORMAT = "CallRecordOutputSource";
+
 
     private Context mContext;
     private CallRecordReceiver mCallRecordReceiver;
@@ -91,6 +95,18 @@ public class CallRecord {
         mContext.startService(intent);
     }
 
+    public void enableSaveFile() {
+        PrefsHelper.writePrefBool(mContext, PREF_SAVE_FILE, true);
+    }
+
+    public void disableSaveFile() {
+        PrefsHelper.writePrefBool(mContext, PREF_SAVE_FILE, false);
+    }
+
+    public boolean getStateSaveFile() {
+        return PrefsHelper.readPrefBool(mContext, PREF_SAVE_FILE);
+    }
+
     public static class Builder {
 
         private Context context;
@@ -114,7 +130,9 @@ public class CallRecord {
         }
 
         public CallRecord build() {
-            return new CallRecord(context, Builder.this);
+            CallRecord callRecord = new CallRecord(context, Builder.this);
+            callRecord.enableSaveFile();
+            return callRecord;
         }
 
         public CallRecord buildService() {
@@ -127,7 +145,9 @@ public class CallRecord {
             intent.putExtra(INTENT_OUTPUT_FORMAT, getOutputFormat());
             intent.putExtra(INTENT_SHOW_SEED, isShowSeed());
 
-            return new CallRecord(context, intent);
+            CallRecord callRecord = new CallRecord(context, intent);
+            callRecord.enableSaveFile();
+            return callRecord;
         }
 
         public Builder setRecordFileName(String recordFileName) {
@@ -192,5 +212,6 @@ public class CallRecord {
             this.recordDirPath = recordDirPath;
             return this;
         }
+
     }
 }
