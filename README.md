@@ -26,6 +26,7 @@ OR
 callRecord = CallRecord.init(this);
 ```
 
+
 **Stop CallRecord**
 
 ```
@@ -53,6 +54,19 @@ If you wish run in Service;
 
 
 
+If you wish stop save CallRecord file;
+
+```
+callRecord.disableSaveFile();
+```
+
+and
+
+```
+callRecord.anableSaveFile();
+```
+
+
 # Installation
 
 Gradle
@@ -60,7 +74,7 @@ Gradle
 Add it as a dependency in your app's build.gradle file
 
 ```
-compile 'com.aykuttasil:callrecord:1.1.1'
+compile 'com.aykuttasil:callrecord:1.1.3'
 
 ```
 
