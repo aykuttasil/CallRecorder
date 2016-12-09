@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.View;
 
 import com.aykuttasil.callrecord.CallRecord;
-import com.aykuttasil.callrecord.helper.PrefsHelper;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -60,6 +59,9 @@ public class MainActivity extends AppCompatActivity {
     public void StartCallRecordClick(View view) {
         Log.i("CallRecord", "StartCallRecordClick");
         callRecord.startCallReceiver();
+
+        //callRecord.enableSaveFile();
+        //callRecord.changeRecordDirName("NewDirName");
     }
 
     public void StopCallRecordClick(View view) {
@@ -67,6 +69,6 @@ public class MainActivity extends AppCompatActivity {
         callRecord.stopCallReceiver();
 
         //callRecord.disableSaveFile();
-        //Log.i(TAG, "isSaveFile: " + PrefsHelper.readPrefBool(this, CallRecord.PREF_SAVE_FILE));
+        //callRecord.changeRecordFileName("NewFileName");
     }
 }

@@ -77,11 +77,14 @@ public class CallRecordReceiver extends BroadcastReceiver {
                     Log.i(TAG, recordstarted ? "recordstarted is true" : "recordstarted is false");
 
                     if (recordstarted) {
+
                         recorder.stop();
                         recorder.reset();
                         recorder.release();
                         recordstarted = false;
+
                         Log.i(TAG, "stop record");
+
                     }
                 }
 
@@ -114,16 +117,41 @@ public class CallRecordReceiver extends BroadcastReceiver {
                 return;
             }
 
-            File sampleDir = new File(mBuilder.getRecordDirPath() + "/" + mBuilder.getRecordDirName());
+            // Kayıt edilecek dosyanın ismi, klasörü ve yolu sonradan değiştirilebilir.
+            // Eğer değişiklik yapılmaz bu değişiklikler yakalanıyor.
+            String prefDirPath = PrefsHelper.readPrefString(mContext, CallRecord.PREF_CHANGE_DIR_PATH);
+            String prefDirName = PrefsHelper.readPrefString(mContext, CallRecord.PREF_CHANGE_DIR_NAME);
+            String prefFileName = PrefsHelper.readPrefString(mContext, CallRecord.PREF_CHANGE_FILE_NAME);
+
+            String recordDirPath = mBuilder.getRecordDirPath();
+            String recordDirName = mBuilder.getRecordDirName();
+
+            //<!-- Dosya kayıt bilgileri sonradan değiştirilmiş mi ?
+            if (prefDirName != null) {
+                recordDirName = prefDirName;
+            }
+
+            if (prefDirPath != null) {
+                recordDirPath = prefDirPath;
+            }
+            //-->
+
+            File sampleDir = new File(recordDirPath + "/" + recordDirName);
+
             if (!sampleDir.exists()) {
                 sampleDir.mkdirs();
             }
 
-            String file_name = "";
+            String file_name = mBuilder.getRecordFileName();
+
+            if (prefFileName != null) {
+                file_name = prefFileName;
+            }
+
             if (mBuilder.isShowSeed()) {
-                file_name = mBuilder.getRecordFileName() + "_" + seed + "_"; // temp dosyaya kayıt edildiği için dosya isminin en sonuna random karakter ekleniyor
+                file_name = file_name + "_" + seed + "_"; // temp dosyaya kayıt edildiği için dosya isminin en sonuna random karakter ekleniyor
             } else {
-                file_name = mBuilder.getRecordFileName();
+                file_name = file_name + "_";
             }
 
             String suffix = "";

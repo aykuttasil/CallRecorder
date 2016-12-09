@@ -20,6 +20,9 @@ public class CallRecord {
     private static final String TAG = CallRecord.class.getSimpleName();
 
     public static final String PREF_SAVE_FILE = "PrefSaveFile";
+    public static final String PREF_CHANGE_FILE_NAME = "PrefChangeFileName";
+    public static final String PREF_CHANGE_DIR_NAME = "PrefChangeDirName";
+    public static final String PREF_CHANGE_DIR_PATH = "PrefChangeDirPath";
 
     public static String INTENT_FILE_NAME = "CallRecordFileName";
     public static String INTENT_DIR_NAME = "CallRecordDirName";
@@ -105,6 +108,75 @@ public class CallRecord {
 
     public boolean getStateSaveFile() {
         return PrefsHelper.readPrefBool(mContext, PREF_SAVE_FILE);
+    }
+
+    public void changeRecordFileName(String newFileName) {
+
+        if (newFileName == null || newFileName.isEmpty()) {
+
+            try {
+                throw new Exception("newFileName can not be empty or null");
+            } catch (Exception e) {
+                e.printStackTrace();
+                return;
+            }
+        }
+
+        PrefsHelper.writePrefString(mContext, PREF_CHANGE_FILE_NAME, newFileName);
+    }
+
+    public String getRecordFileName() {
+        if (PrefsHelper.readPrefString(mContext, PREF_CHANGE_FILE_NAME) != null) {
+            return PrefsHelper.readPrefString(mContext, PREF_CHANGE_FILE_NAME);
+        } else {
+            return mBuilder.getRecordFileName();
+        }
+    }
+
+    public void changeRecordDirName(String newDirName) {
+
+        if (newDirName == null || newDirName.isEmpty()) {
+
+            try {
+                throw new Exception("newDirName can not be empty or null");
+            } catch (Exception e) {
+                e.printStackTrace();
+                return;
+            }
+        }
+
+        PrefsHelper.writePrefString(mContext, PREF_CHANGE_DIR_NAME, newDirName);
+    }
+
+    public String getRecordDirName() {
+        if (PrefsHelper.readPrefString(mContext, PREF_CHANGE_DIR_NAME) != null) {
+            return PrefsHelper.readPrefString(mContext, PREF_CHANGE_DIR_NAME);
+        } else {
+            return mBuilder.getRecordDirName();
+        }
+    }
+
+    public void changeRecordDirPath(String newDirPath) {
+
+        if (newDirPath == null || newDirPath.isEmpty()) {
+
+            try {
+                throw new Exception("newDirPath can not be empty or null");
+            } catch (Exception e) {
+                e.printStackTrace();
+                return;
+            }
+        }
+
+        PrefsHelper.writePrefString(mContext, PREF_CHANGE_DIR_PATH, newDirPath);
+    }
+
+    public String getRecordDirPath() {
+        if (PrefsHelper.readPrefString(mContext, PREF_CHANGE_DIR_PATH) != null) {
+            return PrefsHelper.readPrefString(mContext, PREF_CHANGE_DIR_PATH);
+        } else {
+            return mBuilder.getRecordDirPath();
+        }
     }
 
     public static class Builder {
