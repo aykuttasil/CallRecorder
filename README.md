@@ -53,6 +53,7 @@ If you wish run in Service;
 ```
 
 
+# Optimize
 
 If you wish stop save CallRecord file;
 
@@ -67,6 +68,22 @@ callRecord.anableSaveFile();
 ```
 
 
+
+If you wish change save file name after initialize CallRecorder,
+
+```
+callRecord.changeRecordFileName("NewFileName");
+```
+or
+```
+callRecord.changeRecordDirName("NewDirName");
+```
+or
+```
+callRecord.changeRecordDirPath("NewDirPath");
+```
+
+
 # Installation
 
 Gradle
@@ -74,7 +91,7 @@ Gradle
 Add it as a dependency in your app's build.gradle file
 
 ```
-compile 'com.aykuttasil:callrecord:1.1.3'
+compile 'com.aykuttasil:callrecord:1.1.5'
 
 ```
 
