@@ -25,14 +25,7 @@ public class MainActivity extends AppCompatActivity {
                 .setRecordDirName("CallRecorderDir")
                 .build();
 
-
-
         /*
-        Log.i(TAG, Environment.DIRECTORY_DOWNLOADS);
-        Log.i(TAG, Environment.DIRECTORY_DCIM);
-        Log.i(TAG, Environment.getExternalStorageDirectory().getPath());
-        Log.i(TAG, Environment.getRootDirectory().getPath());
-
         callRecord = new CallRecord.Builder(this)
                 .setRecordFileName("Record_" + new SimpleDateFormat("ddMMyyyyHHmmss", Locale.US).format(new Date()))
                 .setRecordDirName("CallRecord")
@@ -52,15 +45,15 @@ public class MainActivity extends AppCompatActivity {
         Log.i("CallRecord", "StartCallRecordClick");
         callRecord.startCallReceiver();
 
-        callRecord.enableSaveFile();
+        //callRecord.enableSaveFile();
         //callRecord.changeRecordDirName("NewDirName");
     }
 
     public void StopCallRecordClick(View view) {
         Log.i("CallRecord", "StopCallRecordClick");
-        //callRecord.stopCallReceiver();
+        callRecord.stopCallReceiver();
 
-        callRecord.disableSaveFile();
+        //callRecord.disableSaveFile();
         //callRecord.changeRecordFileName("NewFileName");
     }
 }
