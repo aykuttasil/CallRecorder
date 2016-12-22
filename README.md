@@ -91,7 +91,7 @@ Gradle
 Add it as a dependency in your app's build.gradle file
 
 ```
-compile 'com.aykuttasil:callrecord:1.1.5'
+compile 'com.aykuttasil:callrecord:1.1.6'
 
 ```
 
