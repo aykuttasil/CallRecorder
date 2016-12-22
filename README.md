@@ -91,10 +91,24 @@ Gradle
 Add it as a dependency in your app's build.gradle file
 
 ```
-compile 'com.aykuttasil:callrecord:1.1.6'
+compile 'com.aykuttasil:callrecord:1.1.7'
 
 ```
 
+
+# Last Release Summarize
+
+- .setShowPhoneNumber(true) // optional & default value
+
+```
+        callRecord = new CallRecord.Builder(this)
+                .setRecordFileName("RecordFileName")
+                .setRecordDirName("RecordDirName")
+                .setShowSeed(true) // optional & default value ->Ex: RecordFileName_incoming.amr || RecordFileName_outgoing.amr
+                .setShowPhoneNumber(true) // optional & default value
+                .build();
+
+```
 
 # Sample
 

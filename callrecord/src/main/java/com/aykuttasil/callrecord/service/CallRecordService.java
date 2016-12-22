@@ -41,6 +41,7 @@ public class CallRecordService extends Service {
         String dir_path = PrefsHelper.readPrefString(this, CallRecord.PREF_DIR_PATH);
         String dir_name = PrefsHelper.readPrefString(this, CallRecord.PREF_DIR_NAME);
         boolean show_seed = PrefsHelper.readPrefBool(this, CallRecord.PREF_SHOW_SEED);
+        boolean show_phone_number = PrefsHelper.readPrefBool(this, CallRecord.PREF_SHOW_PHONE_NUMBER);
         int output_format = PrefsHelper.readPrefInt(this, CallRecord.PREF_OUTPUT_FORMAT);
         int audio_source = PrefsHelper.readPrefInt(this, CallRecord.PREF_AUDIO_SOURCE);
         int audio_encoder = PrefsHelper.readPrefInt(this, CallRecord.PREF_AUDIO_ENCODER);
@@ -53,6 +54,7 @@ public class CallRecordService extends Service {
                 .setAudioSource(audio_source)
                 .setOutputFormat(output_format)
                 .setShowSeed(show_seed)
+                .setShowPhoneNumber(show_phone_number)
                 .build();
 
         Log.i(TAG, "mCallRecord.startCallReceiver()");

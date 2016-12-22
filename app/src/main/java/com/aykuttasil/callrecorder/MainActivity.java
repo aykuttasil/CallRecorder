@@ -23,6 +23,8 @@ public class MainActivity extends AppCompatActivity {
         callRecord = new CallRecord.Builder(this)
                 .setRecordFileName("CallRecorderFile")
                 .setRecordDirName("CallRecorderDir")
+                .setShowSeed(true)
+                .setShowPhoneNumber(true)
                 .build();
 
         /*

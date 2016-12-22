@@ -37,7 +37,7 @@ public class CallRecordReceiver extends PhoneCallReceiver {
 
     @Override
     protected void onIncomingCallAnswered(Context ctx, String number, Date start) {
-        startRecord(ctx, "incoming");
+        startRecord(ctx, "incoming", number);
     }
 
     @Override
@@ -57,7 +57,7 @@ public class CallRecordReceiver extends PhoneCallReceiver {
 
     @Override
     protected void onOutgoingCallStarted(Context ctx, String number, Date start) {
-        startRecord(ctx, "outgoing");
+        startRecord(ctx, "outgoing", number);
     }
 
     @Override
@@ -81,7 +81,7 @@ public class CallRecordReceiver extends PhoneCallReceiver {
     }
 
 
-    private void startRecord(Context context, String seed) {
+    private void startRecord(Context context, String seed, String phoneNumber) {
 
         try {
 
@@ -97,6 +97,7 @@ public class CallRecordReceiver extends PhoneCallReceiver {
             String dir_path = PrefsHelper.readPrefString(context, CallRecord.PREF_DIR_PATH);
             String dir_name = PrefsHelper.readPrefString(context, CallRecord.PREF_DIR_NAME);
             boolean show_seed = PrefsHelper.readPrefBool(context, CallRecord.PREF_SHOW_SEED);
+            boolean show_phone_number = PrefsHelper.readPrefBool(context, CallRecord.PREF_SHOW_PHONE_NUMBER);
             int output_format = PrefsHelper.readPrefInt(context, CallRecord.PREF_OUTPUT_FORMAT);
             int audio_source = PrefsHelper.readPrefInt(context, CallRecord.PREF_AUDIO_SOURCE);
             int audio_encoder = PrefsHelper.readPrefInt(context, CallRecord.PREF_AUDIO_ENCODER);
@@ -108,11 +109,22 @@ public class CallRecordReceiver extends PhoneCallReceiver {
             }
 
 
+            StringBuilder fileNameBuilder = new StringBuilder();
+            fileNameBuilder.append(file_name);
+            fileNameBuilder.append("_");
+
             if (show_seed) {
-                file_name = file_name + "_" + seed + "_"; // temp dosyaya kayıt edildiği için dosya isminin en sonuna random karakter ekleniyor
-            } else {
-                file_name = file_name + "_";
+                fileNameBuilder.append(seed);
+                fileNameBuilder.append("_");
             }
+
+            if (show_phone_number) {
+                fileNameBuilder.append(phoneNumber);
+                fileNameBuilder.append("_");
+            }
+
+
+            file_name = fileNameBuilder.toString();
 
             String suffix = "";
             switch (output_format) {

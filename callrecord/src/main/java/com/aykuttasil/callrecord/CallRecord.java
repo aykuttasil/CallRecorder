@@ -24,6 +24,7 @@ public class CallRecord {
     public static final String PREF_DIR_NAME = "PrefDirName";
     public static final String PREF_DIR_PATH = "PrefDirPath";
     public static final String PREF_SHOW_SEED = "PrefShowSeed";
+    public static final String PREF_SHOW_PHONE_NUMBER = "PrefShowPhoneNumber";
     public static final String PREF_AUDIO_SOURCE = "PrefAudioSource";
     public static final String PREF_AUDIO_ENCODER = "PrefAudioEncoder";
     public static final String PREF_OUTPUT_FORMAT = "PrefOutputFormat";
@@ -189,6 +190,7 @@ public class CallRecord {
             PrefsHelper.writePrefInt(mContext, PREF_AUDIO_ENCODER, MediaRecorder.AudioEncoder.AMR_NB);
             PrefsHelper.writePrefInt(mContext, PREF_OUTPUT_FORMAT, MediaRecorder.OutputFormat.AMR_NB);
             PrefsHelper.writePrefBool(mContext, PREF_SHOW_SEED, true);
+            PrefsHelper.writePrefBool(mContext, PREF_SHOW_PHONE_NUMBER, true);
 
         }
 
@@ -280,6 +282,18 @@ public class CallRecord {
         public Builder setShowSeed(boolean showSeed) {
 
             PrefsHelper.writePrefBool(mContext, PREF_SHOW_SEED, showSeed);
+
+            return this;
+        }
+
+        public boolean isShowPhoneNumber() {
+
+            return PrefsHelper.readPrefBool(mContext, PREF_SHOW_PHONE_NUMBER);
+        }
+
+        public Builder setShowPhoneNumber(boolean showNumber) {
+
+            PrefsHelper.writePrefBool(mContext, PREF_SHOW_PHONE_NUMBER, showNumber);
 
             return this;
         }
