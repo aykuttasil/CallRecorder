@@ -1,17 +1,11 @@
 package com.aykuttasil.callrecorder;
 
-import android.media.MediaRecorder;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
 import com.aykuttasil.callrecord.CallRecord;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -26,17 +20,14 @@ public class MainActivity extends AppCompatActivity {
 
         //callRecord = CallRecord.init(this);
 
-        /*
         callRecord = new CallRecord.Builder(this)
-                .setRecordFileName("TryCallFile")
-                .setRecordDirName("AykutAsilCallRecord")
-                .setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
-                .setOutputFormat(MediaRecorder.OutputFormat.AMR_NB)
-                .setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION)
-                .setShowSeed(true)
+                .setRecordFileName("CallRecorderFile")
+                .setRecordDirName("CallRecorderDir")
                 .build();
-         */
 
+
+
+        /*
         Log.i(TAG, Environment.DIRECTORY_DOWNLOADS);
         Log.i(TAG, Environment.DIRECTORY_DCIM);
         Log.i(TAG, Environment.getExternalStorageDirectory().getPath());
@@ -53,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
                 .buildService();
 
         callRecord.startCallRecordService();
+        */
 
     }
 
@@ -60,15 +52,15 @@ public class MainActivity extends AppCompatActivity {
         Log.i("CallRecord", "StartCallRecordClick");
         callRecord.startCallReceiver();
 
-        //callRecord.enableSaveFile();
+        callRecord.enableSaveFile();
         //callRecord.changeRecordDirName("NewDirName");
     }
 
     public void StopCallRecordClick(View view) {
         Log.i("CallRecord", "StopCallRecordClick");
-        callRecord.stopCallReceiver();
+        //callRecord.stopCallReceiver();
 
-        //callRecord.disableSaveFile();
+        callRecord.disableSaveFile();
         //callRecord.changeRecordFileName("NewFileName");
     }
 }

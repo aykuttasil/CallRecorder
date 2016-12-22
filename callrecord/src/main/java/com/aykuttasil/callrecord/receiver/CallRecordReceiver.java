@@ -1,11 +1,7 @@
 package com.aykuttasil.callrecord.receiver;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
 import android.media.MediaRecorder;
-import android.os.Bundle;
-import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import com.aykuttasil.callrecord.CallRecord;
@@ -13,11 +9,13 @@ import com.aykuttasil.callrecord.helper.PrefsHelper;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 
 /**
  * Created by aykutasil on 19.10.2016.
  */
-public class CallRecordReceiver extends BroadcastReceiver {
+public class CallRecordReceiver extends PhoneCallReceiver {
+
 
     private static final String TAG = CallRecordReceiver.class.getSimpleName();
 
@@ -25,91 +23,69 @@ public class CallRecordReceiver extends BroadcastReceiver {
     public static final String ACTION_OUT = "android.intent.action.NEW_OUTGOING_CALL";
 
     private static MediaRecorder recorder;
-    private static boolean recordstarted = false;
-    private static boolean wasRinging = false;
-    Bundle bundle;
-    File audiofile;
+    private File audiofile;
+    private boolean isRecordStarted = false;
 
-
-    Context mContext;
-    private CallRecord.Builder mBuilder;
-    private String inCall, outCall, state;
 
     public CallRecordReceiver() {
     }
 
-    public void setmBuilder(CallRecord.Builder mBuilder) {
-        this.mBuilder = mBuilder;
+    @Override
+    protected void onIncomingCallReceived(Context ctx, String number, Date start) {
+
     }
 
     @Override
-    public void onReceive(Context context, Intent intent) {
+    protected void onIncomingCallAnswered(Context ctx, String number, Date start) {
+        startRecord(ctx, "incoming");
+    }
 
-        try {
+    @Override
+    protected void onIncomingCallEnded(Context ctx, String number, Date start, Date end) {
 
-            this.mContext = context;
+        if (recorder != null && isRecordStarted) {
 
-            if ((bundle = intent.getExtras()) == null) {
-                Log.e(TAG, "Intent extras are null");
-                return;
-            }
+            recorder.stop();
+            recorder.reset();
+            recorder.release();
 
-            state = bundle.getString(TelephonyManager.EXTRA_STATE);
-            Log.i(TAG, state == null ? "null" : state);
+            isRecordStarted = false;
 
-            if (intent.getAction().equals(ACTION_IN)) {
-                Log.i(TAG, ACTION_IN);
-
-                if (state.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
-
-                    inCall = bundle.getString(TelephonyManager.EXTRA_INCOMING_NUMBER);
-                    wasRinging = true;
-
-                } else if (state.equals(TelephonyManager.EXTRA_STATE_OFFHOOK)) {
-
-                    if (wasRinging && !recordstarted) {
-                        startRecord("incoming");
-                        Log.i(TAG, "start record");
-                    }
-                } else if (state.equals(TelephonyManager.EXTRA_STATE_IDLE)) {
-
-                    wasRinging = false;
-                    Log.i(TAG, recordstarted ? "recordstarted is true" : "recordstarted is false");
-
-                    if (recordstarted) {
-
-                        recorder.stop();
-                        recorder.reset();
-                        recorder.release();
-                        recordstarted = false;
-
-                        Log.i(TAG, "stop record");
-
-                    }
-                }
-
-            } else if (intent.getAction().equals(ACTION_OUT)) {
-                Log.i(TAG, ACTION_OUT);
-
-                if ((bundle = intent.getExtras()) != null) {
-                    outCall = intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER);
-
-                    if (!recordstarted) {
-                        startRecord("outgoing");
-                        Log.i(TAG, "start record");
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+            Log.i(TAG, "record stop");
         }
     }
 
-    private void startRecord(String seed) {
+    @Override
+    protected void onOutgoingCallStarted(Context ctx, String number, Date start) {
+        startRecord(ctx, "outgoing");
+    }
+
+    @Override
+    protected void onOutgoingCallEnded(Context ctx, String number, Date start, Date end) {
+
+        if (recorder != null && isRecordStarted) {
+
+            recorder.stop();
+            recorder.reset();
+            recorder.release();
+
+            isRecordStarted = false;
+
+            Log.i(TAG, "record stop");
+        }
+    }
+
+    @Override
+    protected void onMissedCall(Context ctx, String number, Date start) {
+
+    }
+
+
+    private void startRecord(Context context, String seed) {
 
         try {
 
-            boolean isSaveFile = PrefsHelper.readPrefBool(mContext, CallRecord.PREF_SAVE_FILE);
+            boolean isSaveFile = PrefsHelper.readPrefBool(context, CallRecord.PREF_SAVE_FILE);
             Log.i(TAG, "isSaveFile: " + isSaveFile);
 
             // dosya kayıt edilsin mi?
@@ -117,45 +93,29 @@ public class CallRecordReceiver extends BroadcastReceiver {
                 return;
             }
 
-            // Kayıt edilecek dosyanın ismi, klasörü ve yolu sonradan değiştirilebilir.
-            // Eğer değişiklik yapılmaz bu değişiklikler yakalanıyor.
-            String prefDirPath = PrefsHelper.readPrefString(mContext, CallRecord.PREF_CHANGE_DIR_PATH);
-            String prefDirName = PrefsHelper.readPrefString(mContext, CallRecord.PREF_CHANGE_DIR_NAME);
-            String prefFileName = PrefsHelper.readPrefString(mContext, CallRecord.PREF_CHANGE_FILE_NAME);
+            String file_name = PrefsHelper.readPrefString(context, CallRecord.PREF_FILE_NAME);
+            String dir_path = PrefsHelper.readPrefString(context, CallRecord.PREF_DIR_PATH);
+            String dir_name = PrefsHelper.readPrefString(context, CallRecord.PREF_DIR_NAME);
+            boolean show_seed = PrefsHelper.readPrefBool(context, CallRecord.PREF_SHOW_SEED);
+            int output_format = PrefsHelper.readPrefInt(context, CallRecord.PREF_OUTPUT_FORMAT);
+            int audio_source = PrefsHelper.readPrefInt(context, CallRecord.PREF_AUDIO_SOURCE);
+            int audio_encoder = PrefsHelper.readPrefInt(context, CallRecord.PREF_AUDIO_ENCODER);
 
-            String recordDirPath = mBuilder.getRecordDirPath();
-            String recordDirName = mBuilder.getRecordDirName();
-
-            //<!-- Dosya kayıt bilgileri sonradan değiştirilmiş mi ?
-            if (prefDirName != null) {
-                recordDirName = prefDirName;
-            }
-
-            if (prefDirPath != null) {
-                recordDirPath = prefDirPath;
-            }
-            //-->
-
-            File sampleDir = new File(recordDirPath + "/" + recordDirName);
+            File sampleDir = new File(dir_path + "/" + dir_name);
 
             if (!sampleDir.exists()) {
                 sampleDir.mkdirs();
             }
 
-            String file_name = mBuilder.getRecordFileName();
 
-            if (prefFileName != null) {
-                file_name = prefFileName;
-            }
-
-            if (mBuilder.isShowSeed()) {
+            if (show_seed) {
                 file_name = file_name + "_" + seed + "_"; // temp dosyaya kayıt edildiği için dosya isminin en sonuna random karakter ekleniyor
             } else {
                 file_name = file_name + "_";
             }
 
             String suffix = "";
-            switch (mBuilder.getOutputFormat()) {
+            switch (output_format) {
                 case MediaRecorder.OutputFormat.AMR_NB: {
                     suffix = ".amr";
                     break;
@@ -181,9 +141,9 @@ public class CallRecordReceiver extends BroadcastReceiver {
             audiofile = File.createTempFile(file_name, suffix, sampleDir);
 
             recorder = new MediaRecorder();
-            recorder.setAudioSource(mBuilder.getAudioSource());
-            recorder.setOutputFormat(mBuilder.getOutputFormat());
-            recorder.setAudioEncoder(mBuilder.getAudioEncoder());
+            recorder.setAudioSource(audio_source);
+            recorder.setOutputFormat(output_format);
+            recorder.setAudioEncoder(audio_encoder);
             recorder.setOutputFile(audiofile.getAbsolutePath());
             recorder.prepare();
 
@@ -192,7 +152,9 @@ public class CallRecordReceiver extends BroadcastReceiver {
         }
 
         recorder.start();
-        recordstarted = true;
+
+        isRecordStarted = true;
+
         Log.i(TAG, "record start");
     }
 

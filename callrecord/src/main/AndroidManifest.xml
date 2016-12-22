@@ -17,6 +17,13 @@
             android:name=".service.CallRecordService"
             android:exported="true" />
 
+        <!--
+        <receiver android:name=".CallReceiver" >
+        <action android:name="android.intent.action.PHONE_STATE" />
+        <action android:name="android.intent.action.NEW_OUTGOING_CALL" />
+        </receiver>
+        -->
+
         <!--<receiver android:name=".receiver.CallRecordReceiver">-->
         <!--<intent-filter>-->
         <!--<action android:name="android.intent.action.PHONE_STATE" />-->

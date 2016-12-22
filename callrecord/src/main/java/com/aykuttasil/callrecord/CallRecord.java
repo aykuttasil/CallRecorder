@@ -20,45 +20,39 @@ public class CallRecord {
     private static final String TAG = CallRecord.class.getSimpleName();
 
     public static final String PREF_SAVE_FILE = "PrefSaveFile";
-    public static final String PREF_CHANGE_FILE_NAME = "PrefChangeFileName";
-    public static final String PREF_CHANGE_DIR_NAME = "PrefChangeDirName";
-    public static final String PREF_CHANGE_DIR_PATH = "PrefChangeDirPath";
-
-    public static String INTENT_FILE_NAME = "CallRecordFileName";
-    public static String INTENT_DIR_NAME = "CallRecordDirName";
-    public static String INTENT_DIR_PATH = "CallRecordDirPath";
-    public static String INTENT_SHOW_SEED = "CallRecordShowSeed";
-    public static String INTENT_AUDIO_SOURCE = "CallRecorAudioSource";
-    public static String INTENT_AUDIO_ENCODER = "CallRecordAudioEncode";
-    public static String INTENT_OUTPUT_FORMAT = "CallRecordOutputSource";
+    public static final String PREF_FILE_NAME = "PrefFileName";
+    public static final String PREF_DIR_NAME = "PrefDirName";
+    public static final String PREF_DIR_PATH = "PrefDirPath";
+    public static final String PREF_SHOW_SEED = "PrefShowSeed";
+    public static final String PREF_AUDIO_SOURCE = "PrefAudioSource";
+    public static final String PREF_AUDIO_ENCODER = "PrefAudioEncoder";
+    public static final String PREF_OUTPUT_FORMAT = "PrefOutputFormat";
 
 
     private Context mContext;
     private CallRecordReceiver mCallRecordReceiver;
-    private Builder mBuilder;
-    private Intent intent;
 
-    private CallRecord(Context context, Builder builder) {
-        this.mContext = context;
-        this.mCallRecordReceiver = new CallRecordReceiver();
-        this.mBuilder = builder;
-    }
+    private CallRecord(Context context) {
 
-    private CallRecord(Context context, Intent intent) {
         this.mContext = context;
-        this.intent = intent;
         this.mCallRecordReceiver = new CallRecordReceiver();
     }
 
     public static CallRecord initReceiver(Context context) {
+
         CallRecord callRecord = new Builder(context).build();
+
         callRecord.startCallReceiver();
+
         return callRecord;
     }
 
     public static CallRecord initService(Context context) {
-        CallRecord callRecord = new Builder(context).buildService();
+
+        CallRecord callRecord = new Builder(context).build();
+
         callRecord.startCallRecordService();
+
         return callRecord;
     }
 
@@ -68,14 +62,15 @@ public class CallRecord {
         intentFilter.addAction(CallRecordReceiver.ACTION_IN);
         intentFilter.addAction(CallRecordReceiver.ACTION_OUT);
 
-        mCallRecordReceiver.setmBuilder(mBuilder);
-
         mContext.registerReceiver(mCallRecordReceiver, intentFilter);
     }
 
     public void stopCallReceiver() {
+
         try {
+
             mContext.unregisterReceiver(mCallRecordReceiver);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -83,26 +78,25 @@ public class CallRecord {
 
     public void startCallRecordService() {
 
-        if (intent == null) {
-            try {
-                throw new Exception("Intent nesnesi boş. Lütfen buildService() i çalıştırdığınızdan emin olun.");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return;
-        }
+        Intent intent = new Intent();
         intent.setClass(mContext, CallRecordService.class);
 
-        Log.i(TAG, "startService()");
-
         mContext.startService(intent);
+
+        Log.i(TAG, "startService()");
     }
 
     public void enableSaveFile() {
+
         PrefsHelper.writePrefBool(mContext, PREF_SAVE_FILE, true);
+
+        Log.i("CallRecord", "Save file enabled");
     }
 
     public void disableSaveFile() {
+
+        Log.i("CallRecord", "Save file disabled");
+
         PrefsHelper.writePrefBool(mContext, PREF_SAVE_FILE, false);
     }
 
@@ -122,15 +116,14 @@ public class CallRecord {
             }
         }
 
-        PrefsHelper.writePrefString(mContext, PREF_CHANGE_FILE_NAME, newFileName);
+        PrefsHelper.writePrefString(mContext, PREF_FILE_NAME, newFileName);
+
+        Log.i("CallRecord", "New file name: " + newFileName);
     }
 
     public String getRecordFileName() {
-        if (PrefsHelper.readPrefString(mContext, PREF_CHANGE_FILE_NAME) != null) {
-            return PrefsHelper.readPrefString(mContext, PREF_CHANGE_FILE_NAME);
-        } else {
-            return mBuilder.getRecordFileName();
-        }
+
+        return PrefsHelper.readPrefString(mContext, PREF_FILE_NAME);
     }
 
     public void changeRecordDirName(String newDirName) {
@@ -145,15 +138,14 @@ public class CallRecord {
             }
         }
 
-        PrefsHelper.writePrefString(mContext, PREF_CHANGE_DIR_NAME, newDirName);
+        PrefsHelper.writePrefString(mContext, PREF_DIR_NAME, newDirName);
+
+        Log.i("CallRecord", "New dir name: " + newDirName);
     }
 
     public String getRecordDirName() {
-        if (PrefsHelper.readPrefString(mContext, PREF_CHANGE_DIR_NAME) != null) {
-            return PrefsHelper.readPrefString(mContext, PREF_CHANGE_DIR_NAME);
-        } else {
-            return mBuilder.getRecordDirName();
-        }
+
+        return PrefsHelper.readPrefString(mContext, PREF_DIR_NAME);
     }
 
     public void changeRecordDirPath(String newDirPath) {
@@ -168,120 +160,139 @@ public class CallRecord {
             }
         }
 
-        PrefsHelper.writePrefString(mContext, PREF_CHANGE_DIR_PATH, newDirPath);
+        PrefsHelper.writePrefString(mContext, PREF_DIR_PATH, newDirPath);
+
+        Log.i("CallRecord", "New dir path: " + newDirPath);
     }
 
     public String getRecordDirPath() {
-        if (PrefsHelper.readPrefString(mContext, PREF_CHANGE_DIR_PATH) != null) {
-            return PrefsHelper.readPrefString(mContext, PREF_CHANGE_DIR_PATH);
-        } else {
-            return mBuilder.getRecordDirPath();
-        }
+
+        return PrefsHelper.readPrefString(mContext, PREF_DIR_PATH);
     }
+
+
+    //
+
 
     public static class Builder {
 
-        private Context context;
-        private String recordFileName;
-        private String recordDirName;
-        private String recordDirPath;
-        private int audioSource;
-        private int audioEncoder;
-        private int outputFormat;
-        private boolean showSeed;
+        private Context mContext;
 
         public Builder(Context context) {
-            this.context = context;
-            this.recordFileName = "Record";
-            this.recordDirName = "CallRecord";
-            this.recordDirPath = Environment.getExternalStorageDirectory().getPath();
-            this.audioSource = MediaRecorder.AudioSource.VOICE_COMMUNICATION;
-            this.audioEncoder = MediaRecorder.AudioEncoder.AMR_NB;
-            this.outputFormat = MediaRecorder.OutputFormat.AMR_NB;
-            this.showSeed = true;
+
+            this.mContext = context;
+
+            PrefsHelper.writePrefString(mContext, PREF_FILE_NAME, "Record");
+            PrefsHelper.writePrefString(mContext, PREF_DIR_NAME, "CallRecord");
+            PrefsHelper.writePrefString(mContext, PREF_DIR_PATH, Environment.getExternalStorageDirectory().getPath());
+            PrefsHelper.writePrefInt(mContext, PREF_AUDIO_SOURCE, MediaRecorder.AudioSource.VOICE_COMMUNICATION);
+            PrefsHelper.writePrefInt(mContext, PREF_AUDIO_ENCODER, MediaRecorder.AudioEncoder.AMR_NB);
+            PrefsHelper.writePrefInt(mContext, PREF_OUTPUT_FORMAT, MediaRecorder.OutputFormat.AMR_NB);
+            PrefsHelper.writePrefBool(mContext, PREF_SHOW_SEED, true);
+
         }
 
         public CallRecord build() {
-            CallRecord callRecord = new CallRecord(context, Builder.this);
+
+            CallRecord callRecord = new CallRecord(mContext);
+
             callRecord.enableSaveFile();
+
             return callRecord;
         }
 
         public CallRecord buildService() {
-            Intent intent = new Intent();
-            intent.putExtra(INTENT_FILE_NAME, getRecordFileName());
-            intent.putExtra(INTENT_DIR_NAME, getRecordDirName());
-            intent.putExtra(INTENT_DIR_PATH, getRecordDirPath());
-            intent.putExtra(INTENT_AUDIO_ENCODER, getAudioEncoder());
-            intent.putExtra(INTENT_AUDIO_SOURCE, getAudioSource());
-            intent.putExtra(INTENT_OUTPUT_FORMAT, getOutputFormat());
-            intent.putExtra(INTENT_SHOW_SEED, isShowSeed());
 
-            CallRecord callRecord = new CallRecord(context, intent);
+            Intent intent = new Intent();
+
+            CallRecord callRecord = new CallRecord(mContext);
+
             callRecord.enableSaveFile();
+
             return callRecord;
         }
 
         public Builder setRecordFileName(String recordFileName) {
-            this.recordFileName = recordFileName;
+
+            PrefsHelper.writePrefString(mContext, PREF_FILE_NAME, recordFileName);
+
             return this;
         }
 
         public String getRecordFileName() {
-            return recordFileName;
+
+            return PrefsHelper.readPrefString(mContext, PREF_FILE_NAME);
         }
 
         public Builder setRecordDirName(String recordDirName) {
-            this.recordDirName = recordDirName;
+
+            PrefsHelper.writePrefString(mContext, PREF_DIR_NAME, recordDirName);
+
             return this;
         }
 
         public String getRecordDirName() {
-            return recordDirName;
+
+            return PrefsHelper.readPrefString(mContext, PREF_DIR_NAME);
         }
 
         public int getAudioSource() {
-            return audioSource;
+
+            return PrefsHelper.readPrefInt(mContext, PREF_AUDIO_SOURCE);
         }
 
         public Builder setAudioSource(int audioSource) {
-            this.audioSource = audioSource;
+
+            PrefsHelper.writePrefInt(mContext, PREF_AUDIO_SOURCE, audioSource);
+
             return this;
         }
 
         public int getAudioEncoder() {
-            return audioEncoder;
+
+            return PrefsHelper.readPrefInt(mContext, PREF_AUDIO_ENCODER);
         }
 
         public Builder setAudioEncoder(int audioEncoder) {
-            this.audioEncoder = audioEncoder;
+
+            PrefsHelper.writePrefInt(mContext, PREF_AUDIO_ENCODER, audioEncoder);
+
             return this;
         }
 
         public int getOutputFormat() {
-            return outputFormat;
+
+            return PrefsHelper.readPrefInt(mContext, PREF_OUTPUT_FORMAT);
         }
 
         public Builder setOutputFormat(int outputFormat) {
-            this.outputFormat = outputFormat;
+
+            PrefsHelper.writePrefInt(mContext, PREF_OUTPUT_FORMAT, outputFormat);
+
             return this;
         }
 
         public boolean isShowSeed() {
-            return showSeed;
+
+            return PrefsHelper.readPrefBool(mContext, PREF_SHOW_SEED);
         }
 
         public Builder setShowSeed(boolean showSeed) {
-            this.showSeed = showSeed;
+
+            PrefsHelper.writePrefBool(mContext, PREF_SHOW_SEED, showSeed);
+
             return this;
         }
 
         public String getRecordDirPath() {
-            return recordDirPath;
+
+            return PrefsHelper.readPrefString(mContext, PREF_DIR_PATH);
         }
 
         public Builder setRecordDirPath(String recordDirPath) {
-            this.recordDirPath = recordDirPath;
+
+            PrefsHelper.writePrefString(mContext, PREF_DIR_PATH, recordDirPath);
+
             return this;
         }
 
