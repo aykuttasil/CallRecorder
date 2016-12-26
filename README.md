@@ -16,7 +16,8 @@ Android incomig and outgoing call recorder at any time.
                 .setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION) // optional & default value
                 .setShowSeed(true) // optional & default value ->Ex: RecordFileName_incoming.amr || RecordFileName_outgoing.amr
                 .build();
-                
+
+
         callRecord.startCallReceiver();
 ```
 
@@ -48,6 +49,7 @@ If you wish run in Service;
                 .setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION) // optional & default value
                 .setShowSeed(true) // optional & default value ->Ex: RecordFileName_incoming.amr || RecordFileName_outgoing.amr
                 .buildService();
+
 
             callRecord.startCallRecordService();
 ```
@@ -91,13 +93,14 @@ Gradle
 Add it as a dependency in your app's build.gradle file
 
 ```
-compile 'com.aykuttasil:callrecord:1.1.7'
+compile 'com.aykuttasil:callrecord:1.2.0'
 
 ```
 
 
 # Last Release Summarize
 
+***You can enable/disable to phone number for record file name***
 - .setShowPhoneNumber(true) // optional & default value
 
 ```
@@ -108,6 +111,12 @@ compile 'com.aykuttasil:callrecord:1.1.7'
                 .setShowPhoneNumber(true) // optional & default value
                 .build();
 
+```
+
+***Custom CallRecordReceiver***
+
+```
+        callRecord.changeReceiver(new MyCallRecordReceiver(callRecord));
 ```
 
 # Sample
