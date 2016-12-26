@@ -36,7 +36,7 @@ public class CallRecord {
     private CallRecord(Context context) {
 
         this.mContext = context;
-        this.mCallRecordReceiver = new CallRecordReceiver();
+        //this.mCallRecordReceiver = new CallRecordReceiver();
     }
 
     public static CallRecord initReceiver(Context context) {
@@ -62,6 +62,11 @@ public class CallRecord {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(CallRecordReceiver.ACTION_IN);
         intentFilter.addAction(CallRecordReceiver.ACTION_OUT);
+
+        if (mCallRecordReceiver == null) {
+
+            mCallRecordReceiver = new CallRecordReceiver(this);
+        }
 
         mContext.registerReceiver(mCallRecordReceiver, intentFilter);
     }
@@ -171,6 +176,10 @@ public class CallRecord {
         return PrefsHelper.readPrefString(mContext, PREF_DIR_PATH);
     }
 
+    public void changeReceiver(CallRecordReceiver receiver) {
+
+        mCallRecordReceiver = receiver;
+    }
 
     //
 
@@ -195,17 +204,6 @@ public class CallRecord {
         }
 
         public CallRecord build() {
-
-            CallRecord callRecord = new CallRecord(mContext);
-
-            callRecord.enableSaveFile();
-
-            return callRecord;
-        }
-
-        public CallRecord buildService() {
-
-            Intent intent = new Intent();
 
             CallRecord callRecord = new CallRecord(mContext);
 

@@ -27,21 +27,23 @@ public class CallRecordReceiver extends PhoneCallReceiver {
     private boolean isRecordStarted = false;
 
 
-    public CallRecordReceiver() {
-    }
-
-    @Override
-    protected void onIncomingCallReceived(Context ctx, String number, Date start) {
+    public CallRecordReceiver(CallRecord callRecord) {
+        super(callRecord);
 
     }
 
     @Override
-    protected void onIncomingCallAnswered(Context ctx, String number, Date start) {
+    protected void onIncomingCallReceived(Context ctx, CallRecord callRecord, String number, Date start) {
+
+    }
+
+    @Override
+    protected void onIncomingCallAnswered(Context ctx, CallRecord callRecord, String number, Date start) {
         startRecord(ctx, "incoming", number);
     }
 
     @Override
-    protected void onIncomingCallEnded(Context ctx, String number, Date start, Date end) {
+    protected void onIncomingCallEnded(Context ctx, CallRecord callRecord, String number, Date start, Date end) {
 
         if (recorder != null && isRecordStarted) {
 
@@ -56,12 +58,12 @@ public class CallRecordReceiver extends PhoneCallReceiver {
     }
 
     @Override
-    protected void onOutgoingCallStarted(Context ctx, String number, Date start) {
+    protected void onOutgoingCallStarted(Context ctx, CallRecord callRecord, String number, Date start) {
         startRecord(ctx, "outgoing", number);
     }
 
     @Override
-    protected void onOutgoingCallEnded(Context ctx, String number, Date start, Date end) {
+    protected void onOutgoingCallEnded(Context ctx, CallRecord callRecord, String number, Date start, Date end) {
 
         if (recorder != null && isRecordStarted) {
 
@@ -76,7 +78,7 @@ public class CallRecordReceiver extends PhoneCallReceiver {
     }
 
     @Override
-    protected void onMissedCall(Context ctx, String number, Date start) {
+    protected void onMissedCall(Context ctx, CallRecord callRecord, String number, Date start) {
 
     }
 

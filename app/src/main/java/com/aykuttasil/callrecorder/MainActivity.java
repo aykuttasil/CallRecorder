@@ -24,8 +24,11 @@ public class MainActivity extends AppCompatActivity {
                 .setRecordFileName("CallRecorderFile")
                 .setRecordDirName("CallRecorderDir")
                 .setShowSeed(true)
-                .setShowPhoneNumber(true)
                 .build();
+
+        callRecord.changeReceiver(new MyCallRecordReceiver(callRecord));
+
+
 
         /*
         callRecord = new CallRecord.Builder(this)
