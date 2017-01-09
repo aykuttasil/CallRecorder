@@ -21,6 +21,7 @@ public class CallRecordReceiver extends PhoneCallReceiver {
 
     public static final String ACTION_IN = "android.intent.action.PHONE_STATE";
     public static final String ACTION_OUT = "android.intent.action.NEW_OUTGOING_CALL";
+    public static final String EXTRA_PHONE_NUMBER = "android.intent.extra.PHONE_NUMBER";
 
     private static MediaRecorder recorder;
     private File audiofile;

@@ -31,15 +31,17 @@ public abstract class PhoneCallReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
 
         //We listen to two intents.  The new outgoing call only tells us of an outgoing call.  We use it to get the number.
-        if (intent.getAction().equals("android.intent.action.NEW_OUTGOING_CALL")) {
+        if (intent.getAction().equals(CallRecordReceiver.ACTION_OUT)) {
 
-            savedNumber = intent.getExtras().getString("android.intent.extra.PHONE_NUMBER");
+            savedNumber = intent.getExtras().getString(CallRecordReceiver.EXTRA_PHONE_NUMBER);
 
         } else {
 
             String stateStr = intent.getExtras().getString(TelephonyManager.EXTRA_STATE);
 
             String number = intent.getExtras().getString(TelephonyManager.EXTRA_INCOMING_NUMBER);
+
+            savedNumber = number;
 
             int state = 0;
 
@@ -74,10 +76,12 @@ public abstract class PhoneCallReceiver extends BroadcastReceiver {
     //Incoming call-  goes from IDLE to RINGING when it rings, to OFFHOOK when it's answered, to IDLE when its hung up
     //Outgoing call-  goes from IDLE to OFFHOOK when it dials out, to IDLE when hung up
     public void onCallStateChanged(Context context, int state, String number) {
+
         if (lastState == state) {
             //No change, debounce extras
             return;
         }
+
         switch (state) {
             case TelephonyManager.CALL_STATE_RINGING:
 
@@ -91,15 +95,19 @@ public abstract class PhoneCallReceiver extends BroadcastReceiver {
             case TelephonyManager.CALL_STATE_OFFHOOK:
                 //Transition of ringing->offhook are pickups of incoming calls.  Nothing done on them
                 if (lastState != TelephonyManager.CALL_STATE_RINGING) {
+
                     isIncoming = false;
                     callStartTime = new Date();
 
                     onOutgoingCallStarted(context, mCallRecord, savedNumber, callStartTime);
+
                 } else {
+
                     isIncoming = true;
                     callStartTime = new Date();
 
                     onIncomingCallAnswered(context, mCallRecord, savedNumber, callStartTime);
+
                 }
 
                 break;
@@ -110,12 +118,15 @@ public abstract class PhoneCallReceiver extends BroadcastReceiver {
                     //Ring but no pickup-  a miss
 
                     onMissedCall(context, mCallRecord, savedNumber, callStartTime);
+
                 } else if (isIncoming) {
 
                     onIncomingCallEnded(context, mCallRecord, savedNumber, callStartTime, new Date());
+
                 } else {
 
                     onOutgoingCallEnded(context, mCallRecord, savedNumber, callStartTime, new Date());
+                    
                 }
                 break;
         }
