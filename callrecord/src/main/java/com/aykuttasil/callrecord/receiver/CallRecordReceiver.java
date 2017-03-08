@@ -45,17 +45,7 @@ public class CallRecordReceiver extends PhoneCallReceiver {
 
     @Override
     protected void onIncomingCallEnded(Context ctx, CallRecord callRecord, String number, Date start, Date end) {
-
-        if (recorder != null && isRecordStarted) {
-
-            recorder.stop();
-            recorder.reset();
-            recorder.release();
-
-            isRecordStarted = false;
-
-            Log.i(TAG, "record stop");
-        }
+        stopRecord(ctx);
     }
 
     @Override
@@ -65,17 +55,7 @@ public class CallRecordReceiver extends PhoneCallReceiver {
 
     @Override
     protected void onOutgoingCallEnded(Context ctx, CallRecord callRecord, String number, Date start, Date end) {
-
-        if (recorder != null && isRecordStarted) {
-
-            recorder.stop();
-            recorder.reset();
-            recorder.release();
-
-            isRecordStarted = false;
-
-            Log.i(TAG, "record stop");
-        }
+        stopRecord(ctx);
     }
 
     @Override
@@ -162,15 +142,28 @@ public class CallRecordReceiver extends PhoneCallReceiver {
             recorder.setOutputFile(audiofile.getAbsolutePath());
             recorder.prepare();
 
+            recorder.start();
+
+            isRecordStarted = true;
+
+            Log.i(TAG, "record start");
+
         } catch (IllegalStateException | IOException e) {
             e.printStackTrace();
         }
+    }
 
-        recorder.start();
+    private void stopRecord(Context context) {
+        if (recorder != null && isRecordStarted) {
 
-        isRecordStarted = true;
+            recorder.stop();
+            recorder.reset();
+            recorder.release();
 
-        Log.i(TAG, "record start");
+            isRecordStarted = false;
+
+            Log.i(TAG, "record stop");
+        }
     }
 
 }
