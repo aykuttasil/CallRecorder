@@ -17,7 +17,7 @@ public class CallRecordService extends Service {
 
     private static final String TAG = CallRecordService.class.getSimpleName();
 
-    CallRecord mCallRecord;
+    protected CallRecord mCallRecord;
 
     @Nullable
     @Override
