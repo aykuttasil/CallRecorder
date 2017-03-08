@@ -67,6 +67,7 @@ public class CallRecordService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        mCallRecord.stopCallReceiver();
 
         Log.i(TAG, "onDestroy()");
     }
