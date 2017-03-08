@@ -63,6 +63,12 @@ public class CallRecordReceiver extends PhoneCallReceiver {
 
     }
 
+    // Derived classes could override these to respond to specific events of interest
+    protected void onRecordingStarted(Context context, File audioFile) {
+    }
+
+    protected void onRecordingFinished(Context context, File audioFile) {
+    }
 
     private void startRecord(Context context, String seed, String phoneNumber) {
 
@@ -145,6 +151,7 @@ public class CallRecordReceiver extends PhoneCallReceiver {
             recorder.start();
 
             isRecordStarted = true;
+            onRecordingStarted(context, audiofile);
 
             Log.i(TAG, "record start");
 
@@ -161,6 +168,7 @@ public class CallRecordReceiver extends PhoneCallReceiver {
             recorder.release();
 
             isRecordStarted = false;
+            onRecordingFinished(context, audiofile);
 
             Log.i(TAG, "record stop");
         }
