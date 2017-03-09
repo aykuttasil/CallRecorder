@@ -86,6 +86,15 @@ callRecord.changeRecordDirPath("NewDirPath");
 ```
 
 
+---
+
+**Custom CallRecordReceiver**
+
+```
+callRecord.changeReceiver(new MyCallRecordReceiver(callRecord));
+```
+
+
 # Installation
 
 Gradle
@@ -93,35 +102,18 @@ Gradle
 Add it as a dependency in your app's build.gradle file
 
 ```
-compile 'com.aykuttasil:callrecord:1.2.1'
+compile 'com.aykuttasil:callrecord:1.2.2'
 
 ```
 
-
-# Last Release Summarize
-
-***You can enable/disable to phone number for record file name***
-- .setShowPhoneNumber(true) // optional & default value
-
-```
-        callRecord = new CallRecord.Builder(this)
-                .setRecordFileName("RecordFileName")
-                .setRecordDirName("RecordDirName")
-                .setShowSeed(true) // optional & default value ->Ex: RecordFileName_incoming.amr || RecordFileName_outgoing.amr
-                .setShowPhoneNumber(true) // optional & default value
-                .build();
-
-```
-
-***Custom CallRecordReceiver***
-
-```
-        callRecord.changeReceiver(new MyCallRecordReceiver(callRecord));
-```
 
 # Sample
 
 You can see sample project in app folder.
+
+
+# Thank You
+[Luong Vo](https://github.com/luongvo)
 
 
 # License 
