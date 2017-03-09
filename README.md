@@ -7,18 +7,18 @@ Android incomig and outgoing call recorder at any time.
 # How to Use
 
 ```
-        callRecord = new CallRecord.Builder(this)
-                .setRecordFileName("RecordFileName")
-                .setRecordDirName("RecordDirName")
-                .setRecordDirPath(Environment.getExternalStorageDirectory().getPath()) // optional & default value
-                .setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB) // optional & default value
-                .setOutputFormat(MediaRecorder.OutputFormat.AMR_NB) // optional & default value
-                .setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION) // optional & default value
-                .setShowSeed(true) // optional & default value ->Ex: RecordFileName_incoming.amr || RecordFileName_outgoing.amr
-                .build();
+callRecord = new CallRecord.Builder(this)
+       .setRecordFileName("RecordFileName")
+       .setRecordDirName("RecordDirName")
+       .setRecordDirPath(Environment.getExternalStorageDirectory().getPath()) // optional & default value
+       .setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB) // optional & default value
+       .setOutputFormat(MediaRecorder.OutputFormat.AMR_NB) // optional & default value
+       .setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION) // optional & default value
+       .setShowSeed(true) // optional & default value ->Ex: RecordFileName_incoming.amr || RecordFileName_outgoing.amr
+       .build();
 
 
-        callRecord.startCallReceiver();
+callRecord.startCallReceiver();
 ```
 
 OR
@@ -40,18 +40,18 @@ callRecord.stopCallReceiver();
 If you wish run in Service;
 
 ```
-            callRecord = new CallRecord.Builder(this)
-                .setRecordFileName("RecordFileName")
-                .setRecordDirName("RecordDirName")
-                .setRecordDirPath(Environment.getExternalStorageDirectory().getPath()) // optional & default value
-                .setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB) // optional & default value
-                .setOutputFormat(MediaRecorder.OutputFormat.AMR_NB) // optional & default value
-                .setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION) // optional & default value
-                .setShowSeed(true) // optional & default value ->Ex: RecordFileName_incoming.amr || RecordFileName_outgoing.amr
-                .buildService();
+callRecord = new CallRecord.Builder(this)
+   .setRecordFileName("RecordFileName")
+   .setRecordDirName("RecordDirName")
+   .setRecordDirPath(Environment.getExternalStorageDirectory().getPath()) // optional & default value
+   .setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB) // optional & default value
+   .setOutputFormat(MediaRecorder.OutputFormat.AMR_NB) // optional & default value
+   .setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION) // optional & default value
+   .setShowSeed(true) // optional & default value ->Ex: RecordFileName_incoming.amr || RecordFileName_outgoing.amr
+   .buildService();
 
 
-            callRecord.startCallRecordService();
+callRecord.startCallRecordService();
 ```
 
 
@@ -66,7 +66,7 @@ callRecord.disableSaveFile();
 and
 
 ```
-callRecord.anableSaveFile();
+callRecord.enableSaveFile();
 ```
 
 
