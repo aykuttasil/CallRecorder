@@ -17,7 +17,7 @@ public class CallRecordService extends Service {
 
     private static final String TAG = CallRecordService.class.getSimpleName();
 
-    CallRecord mCallRecord;
+    protected CallRecord mCallRecord;
 
     @Nullable
     @Override
@@ -67,6 +67,7 @@ public class CallRecordService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        mCallRecord.stopCallReceiver();
 
         Log.i(TAG, "onDestroy()");
     }
