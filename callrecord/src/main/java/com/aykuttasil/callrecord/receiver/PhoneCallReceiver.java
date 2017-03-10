@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.telephony.TelephonyManager;
 
-import com.aykuttasil.callrecord.CallRecord;
-
 import java.util.Date;
 
 /**
@@ -21,11 +19,6 @@ public abstract class PhoneCallReceiver extends BroadcastReceiver {
     private static Date callStartTime;
     private static boolean isIncoming;
     private static String savedNumber;  //because the passed incoming is only valid in ringing
-    private CallRecord mCallRecord;
-
-    public PhoneCallReceiver(CallRecord callRecord) {
-        this.mCallRecord = callRecord;
-    }
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -59,17 +52,17 @@ public abstract class PhoneCallReceiver extends BroadcastReceiver {
     }
 
     //Derived classes should override these to respond to specific events of interest
-    protected abstract void onIncomingCallReceived(Context ctx, CallRecord callRecord, String number, Date start);
+    protected abstract void onIncomingCallReceived(Context context, String number, Date start);
 
-    protected abstract void onIncomingCallAnswered(Context ctx, CallRecord callRecord, String number, Date start);
+    protected abstract void onIncomingCallAnswered(Context context, String number, Date start);
 
-    protected abstract void onIncomingCallEnded(Context ctx, CallRecord callRecord, String number, Date start, Date end);
+    protected abstract void onIncomingCallEnded(Context context, String number, Date start, Date end);
 
-    protected abstract void onOutgoingCallStarted(Context ctx, CallRecord callRecord, String number, Date start);
+    protected abstract void onOutgoingCallStarted(Context context, String number, Date start);
 
-    protected abstract void onOutgoingCallEnded(Context ctx, CallRecord callRecord, String number, Date start, Date end);
+    protected abstract void onOutgoingCallEnded(Context context, String number, Date start, Date end);
 
-    protected abstract void onMissedCall(Context ctx, CallRecord callRecord, String number, Date start);
+    protected abstract void onMissedCall(Context context, String number, Date start);
 
     //Deals with actual events
 
@@ -89,7 +82,7 @@ public abstract class PhoneCallReceiver extends BroadcastReceiver {
                 callStartTime = new Date();
                 savedNumber = number;
 
-                onIncomingCallReceived(context, mCallRecord, number, callStartTime);
+                onIncomingCallReceived(context, number, callStartTime);
 
                 break;
             case TelephonyManager.CALL_STATE_OFFHOOK:
@@ -99,14 +92,14 @@ public abstract class PhoneCallReceiver extends BroadcastReceiver {
                     isIncoming = false;
                     callStartTime = new Date();
 
-                    onOutgoingCallStarted(context, mCallRecord, savedNumber, callStartTime);
+                    onOutgoingCallStarted(context, savedNumber, callStartTime);
 
                 } else {
 
                     isIncoming = true;
                     callStartTime = new Date();
 
-                    onIncomingCallAnswered(context, mCallRecord, savedNumber, callStartTime);
+                    onIncomingCallAnswered(context, savedNumber, callStartTime);
 
                 }
 
@@ -117,16 +110,16 @@ public abstract class PhoneCallReceiver extends BroadcastReceiver {
                 if (lastState == TelephonyManager.CALL_STATE_RINGING) {
                     //Ring but no pickup-  a miss
 
-                    onMissedCall(context, mCallRecord, savedNumber, callStartTime);
+                    onMissedCall(context, savedNumber, callStartTime);
 
                 } else if (isIncoming) {
 
-                    onIncomingCallEnded(context, mCallRecord, savedNumber, callStartTime, new Date());
+                    onIncomingCallEnded(context, savedNumber, callStartTime, new Date());
 
                 } else {
 
-                    onOutgoingCallEnded(context, mCallRecord, savedNumber, callStartTime, new Date());
-                    
+                    onOutgoingCallEnded(context, savedNumber, callStartTime, new Date());
+
                 }
                 break;
         }

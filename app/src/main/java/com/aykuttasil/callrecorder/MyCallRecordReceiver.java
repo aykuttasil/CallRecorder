@@ -1,7 +1,6 @@
 package com.aykuttasil.callrecorder;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.aykuttasil.callrecord.CallRecord;
 import com.aykuttasil.callrecord.receiver.CallRecordReceiver;
@@ -19,10 +18,9 @@ public class MyCallRecordReceiver extends CallRecordReceiver {
     }
 
     @Override
-    protected void onOutgoingCallStarted(Context ctx, CallRecord callRecord, String number, Date start) {
-
+    protected void onOutgoingCallStarted(Context ctx, String number, Date start) {
         callRecord.disableSaveFile();
 
-        super.onOutgoingCallStarted(ctx, callRecord, number, start);
+        super.onOutgoingCallStarted(ctx, number, start);
     }
 }
