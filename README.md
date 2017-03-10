@@ -7,18 +7,18 @@ Android incomig and outgoing call recorder at any time.
 # How to Use
 
 ```
-        callRecord = new CallRecord.Builder(this)
-                .setRecordFileName("RecordFileName")
-                .setRecordDirName("RecordDirName")
-                .setRecordDirPath(Environment.getExternalStorageDirectory().getPath()) // optional & default value
-                .setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB) // optional & default value
-                .setOutputFormat(MediaRecorder.OutputFormat.AMR_NB) // optional & default value
-                .setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION) // optional & default value
-                .setShowSeed(true) // optional & default value ->Ex: RecordFileName_incoming.amr || RecordFileName_outgoing.amr
-                .build();
+callRecord = new CallRecord.Builder(this)
+       .setRecordFileName("RecordFileName")
+       .setRecordDirName("RecordDirName")
+       .setRecordDirPath(Environment.getExternalStorageDirectory().getPath()) // optional & default value
+       .setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB) // optional & default value
+       .setOutputFormat(MediaRecorder.OutputFormat.AMR_NB) // optional & default value
+       .setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION) // optional & default value
+       .setShowSeed(true) // optional & default value ->Ex: RecordFileName_incoming.amr || RecordFileName_outgoing.amr
+       .build();
 
 
-        callRecord.startCallReceiver();
+callRecord.startCallReceiver();
 ```
 
 OR
@@ -40,18 +40,18 @@ callRecord.stopCallReceiver();
 If you wish run in Service;
 
 ```
-            callRecord = new CallRecord.Builder(this)
-                .setRecordFileName("RecordFileName")
-                .setRecordDirName("RecordDirName")
-                .setRecordDirPath(Environment.getExternalStorageDirectory().getPath()) // optional & default value
-                .setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB) // optional & default value
-                .setOutputFormat(MediaRecorder.OutputFormat.AMR_NB) // optional & default value
-                .setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION) // optional & default value
-                .setShowSeed(true) // optional & default value ->Ex: RecordFileName_incoming.amr || RecordFileName_outgoing.amr
-                .buildService();
+callRecord = new CallRecord.Builder(this)
+   .setRecordFileName("RecordFileName")
+   .setRecordDirName("RecordDirName")
+   .setRecordDirPath(Environment.getExternalStorageDirectory().getPath()) // optional & default value
+   .setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB) // optional & default value
+   .setOutputFormat(MediaRecorder.OutputFormat.AMR_NB) // optional & default value
+   .setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION) // optional & default value
+   .setShowSeed(true) // optional & default value ->Ex: RecordFileName_incoming.amr || RecordFileName_outgoing.amr
+   .buildService();
 
 
-            callRecord.startCallRecordService();
+callRecord.startCallRecordService();
 ```
 
 
@@ -66,7 +66,7 @@ callRecord.disableSaveFile();
 and
 
 ```
-callRecord.anableSaveFile();
+callRecord.enableSaveFile();
 ```
 
 
@@ -86,6 +86,15 @@ callRecord.changeRecordDirPath("NewDirPath");
 ```
 
 
+---
+
+**Custom CallRecordReceiver**
+
+```
+callRecord.changeReceiver(new MyCallRecordReceiver(callRecord));
+```
+
+
 # Installation
 
 Gradle
@@ -93,35 +102,18 @@ Gradle
 Add it as a dependency in your app's build.gradle file
 
 ```
-compile 'com.aykuttasil:callrecord:1.2.1'
+compile 'com.aykuttasil:callrecord:1.2.2'
 
 ```
 
-
-# Last Release Summarize
-
-***You can enable/disable to phone number for record file name***
-- .setShowPhoneNumber(true) // optional & default value
-
-```
-        callRecord = new CallRecord.Builder(this)
-                .setRecordFileName("RecordFileName")
-                .setRecordDirName("RecordDirName")
-                .setShowSeed(true) // optional & default value ->Ex: RecordFileName_incoming.amr || RecordFileName_outgoing.amr
-                .setShowPhoneNumber(true) // optional & default value
-                .build();
-
-```
-
-***Custom CallRecordReceiver***
-
-```
-        callRecord.changeReceiver(new MyCallRecordReceiver(callRecord));
-```
 
 # Sample
 
 You can see sample project in app folder.
+
+
+# Thank You
+[Luong Vo](https://github.com/luongvo)
 
 
 # License 

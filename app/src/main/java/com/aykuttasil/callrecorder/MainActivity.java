@@ -28,6 +28,8 @@ public class MainActivity extends AppCompatActivity {
 
         callRecord.changeReceiver(new MyCallRecordReceiver(callRecord));
 
+        //callRecord.enableSaveFile();
+
 
 
         /*
