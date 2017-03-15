@@ -23,51 +23,50 @@ public class CallRecordReceiver extends PhoneCallReceiver {
     public static final String ACTION_OUT = "android.intent.action.NEW_OUTGOING_CALL";
     public static final String EXTRA_PHONE_NUMBER = "android.intent.extra.PHONE_NUMBER";
 
+    protected CallRecord callRecord;
     private static MediaRecorder recorder;
     private File audiofile;
     private boolean isRecordStarted = false;
 
-
     public CallRecordReceiver(CallRecord callRecord) {
-        super(callRecord);
+        this.callRecord = callRecord;
+    }
+
+    @Override
+    protected void onIncomingCallReceived(Context context, String number, Date start) {
 
     }
 
     @Override
-    protected void onIncomingCallReceived(Context ctx, CallRecord callRecord, String number, Date start) {
-
+    protected void onIncomingCallAnswered(Context context, String number, Date start) {
+        startRecord(context, "incoming", number);
     }
 
     @Override
-    protected void onIncomingCallAnswered(Context ctx, CallRecord callRecord, String number, Date start) {
-        startRecord(ctx, "incoming", number);
+    protected void onIncomingCallEnded(Context context, String number, Date start, Date end) {
+        stopRecord(context);
     }
 
     @Override
-    protected void onIncomingCallEnded(Context ctx, CallRecord callRecord, String number, Date start, Date end) {
-        stopRecord(ctx);
+    protected void onOutgoingCallStarted(Context context, String number, Date start) {
+        startRecord(context, "outgoing", number);
     }
 
     @Override
-    protected void onOutgoingCallStarted(Context ctx, CallRecord callRecord, String number, Date start) {
-        startRecord(ctx, "outgoing", number);
+    protected void onOutgoingCallEnded(Context context, String number, Date start, Date end) {
+        stopRecord(context);
     }
 
     @Override
-    protected void onOutgoingCallEnded(Context ctx, CallRecord callRecord, String number, Date start, Date end) {
-        stopRecord(ctx);
-    }
-
-    @Override
-    protected void onMissedCall(Context ctx, CallRecord callRecord, String number, Date start) {
+    protected void onMissedCall(Context context, String number, Date start) {
 
     }
 
     // Derived classes could override these to respond to specific events of interest
-    protected void onRecordingStarted(Context context, File audioFile) {
+    protected void onRecordingStarted(Context context, CallRecord callRecord, File audioFile) {
     }
 
-    protected void onRecordingFinished(Context context, File audioFile) {
+    protected void onRecordingFinished(Context context, CallRecord callRecord, File audioFile) {
     }
 
     private void startRecord(Context context, String seed, String phoneNumber) {
@@ -151,7 +150,7 @@ public class CallRecordReceiver extends PhoneCallReceiver {
             recorder.start();
 
             isRecordStarted = true;
-            onRecordingStarted(context, audiofile);
+            onRecordingStarted(context, callRecord, audiofile);
 
             Log.i(TAG, "record start");
 
@@ -168,7 +167,7 @@ public class CallRecordReceiver extends PhoneCallReceiver {
             recorder.release();
 
             isRecordStarted = false;
-            onRecordingFinished(context, audiofile);
+            onRecordingFinished(context, callRecord, audiofile);
 
             Log.i(TAG, "record stop");
         }
