@@ -102,7 +102,7 @@ Gradle
 Add it as a dependency in your app's build.gradle file
 
 ```
-compile 'com.aykuttasil:callrecord:1.2.2'
+compile 'com.aykuttasil:callrecord:1.2.3'
 
 ```
 
