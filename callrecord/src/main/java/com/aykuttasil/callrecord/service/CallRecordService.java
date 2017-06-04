@@ -28,7 +28,6 @@ public class CallRecordService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-
         Log.i(TAG, "onCreate()");
     }
 
@@ -58,7 +57,6 @@ public class CallRecordService extends Service {
                 .build();
 
         Log.i(TAG, "mCallRecord.startCallReceiver()");
-
         mCallRecord.startCallReceiver();
 
         return START_REDELIVER_INTENT;

@@ -12,7 +12,6 @@ import android.support.annotation.Nullable;
 
 public class PrefsHelper {
 
-    private static final String DEFAULT_PREF_NAME = PrefsHelper.class.getSimpleName();
     private static final String DEFAULT_STRING_VALUE = null;
     private static final int DEFAULT_INT_VALUE = 0;
     private static final boolean DEFAULT_BOOLEAN_VALUE = false;
@@ -21,12 +20,10 @@ public class PrefsHelper {
     private SharedPreferences mPref;
 
     public PrefsHelper(Context context, String pref_name) {
-        mContext = context;
         mPref = context.getSharedPreferences(pref_name, Context.MODE_PRIVATE);
     }
 
     public PrefsHelper(Context context) {
-        mContext = context;
         mPref = getDefaultPreference(context);
     }
 

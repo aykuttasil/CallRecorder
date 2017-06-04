@@ -145,8 +145,9 @@ public class CallRecordReceiver extends PhoneCallReceiver {
             recorder.setOutputFormat(output_format);
             recorder.setAudioEncoder(audio_encoder);
             recorder.setOutputFile(audiofile.getAbsolutePath());
-            recorder.prepare();
 
+            recorder.prepare();
+            //Thread.sleep(2000);
             recorder.start();
 
             isRecordStarted = true;
@@ -165,6 +166,7 @@ public class CallRecordReceiver extends PhoneCallReceiver {
             recorder.stop();
             recorder.reset();
             recorder.release();
+            recorder = null;
 
             isRecordStarted = false;
             onRecordingFinished(context, callRecord, audiofile);

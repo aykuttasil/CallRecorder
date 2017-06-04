@@ -19,8 +19,7 @@ public class MyCallRecordReceiver extends CallRecordReceiver {
 
     @Override
     protected void onOutgoingCallStarted(Context ctx, String number, Date start) {
-        callRecord.disableSaveFile();
-
+        //callRecord.disableSaveFile();
         super.onOutgoingCallStarted(ctx, number, start);
     }
 }

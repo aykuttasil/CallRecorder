@@ -26,10 +26,9 @@ public class MainActivity extends AppCompatActivity {
                 .setShowSeed(true)
                 .build();
 
-        callRecord.changeReceiver(new MyCallRecordReceiver(callRecord));
+        //callRecord.changeReceiver(new MyCallRecordReceiver(callRecord));
 
         //callRecord.enableSaveFile();
-
 
 
         /*
