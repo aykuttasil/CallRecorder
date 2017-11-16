@@ -1,22 +1,7 @@
-allprojects {
-    repositories {
-        jcenter()
-        mavenCentral()
-        mavenLocal()
-        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-        maven { url "https://jitpack.io" }
-        maven { url "http://dl.bintray.com/android/android-tools" }
-        maven { url 'https://maven.fabric.io/public' }
-        maven { url "https://jcenter.bintray.com" }
-    }
-}
-
 apply plugin: 'com.android.library'
 
 android {
-
     compileSdkVersion project.sdk
-    buildToolsVersion project.buildTools
 
     defaultConfig {
         minSdkVersion project.minSdk

@@ -1,5 +1,6 @@
 package com.aykuttasil.callrecorder;
 
+import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -17,19 +18,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         //callRecord = CallRecord.init(this);
-
         callRecord = new CallRecord.Builder(this)
-                .setRecordFileName("CallRecorderFile")
-                .setRecordDirName("CallRecorderDir")
+                .setRecordFileName("CallRecorderTestFile")
+                .setRecordDirName("CallRecorderTest")
+                .setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION)
                 .setShowSeed(true)
                 .build();
 
         //callRecord.changeReceiver(new MyCallRecordReceiver(callRecord));
 
         //callRecord.enableSaveFile();
-
 
         /*
         callRecord = new CallRecord.Builder(this)
@@ -44,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
 
         callRecord.startCallRecordService();
         */
-
     }
 
     public void StartCallRecordClick(View view) {
@@ -62,4 +60,5 @@ public class MainActivity extends AppCompatActivity {
         //callRecord.disableSaveFile();
         //callRecord.changeRecordFileName("NewFileName");
     }
+
 }

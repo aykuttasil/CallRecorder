@@ -150,9 +150,9 @@ public class CallRecord {
 
     public static class Builder {
         private Context mContext;
+
         public Builder(Context context) {
             this.mContext = context;
-
             PrefsHelper.writePrefString(mContext, PREF_FILE_NAME, "Record");
             PrefsHelper.writePrefString(mContext, PREF_DIR_NAME, "CallRecord");
             PrefsHelper.writePrefString(mContext, PREF_DIR_PATH, Environment.getExternalStorageDirectory().getPath());
@@ -162,6 +162,7 @@ public class CallRecord {
             PrefsHelper.writePrefBool(mContext, PREF_SHOW_SEED, true);
             PrefsHelper.writePrefBool(mContext, PREF_SHOW_PHONE_NUMBER, true);
         }
+
         public CallRecord build() {
             CallRecord callRecord = new CallRecord(mContext);
             callRecord.enableSaveFile();
@@ -190,6 +191,11 @@ public class CallRecord {
             return PrefsHelper.readPrefInt(mContext, PREF_AUDIO_SOURCE);
         }
 
+        /**
+         * @param audioSource
+         * @return
+         * @see MediaRecorder.AudioSource
+         */
         public Builder setAudioSource(int audioSource) {
             PrefsHelper.writePrefInt(mContext, PREF_AUDIO_SOURCE, audioSource);
             return this;

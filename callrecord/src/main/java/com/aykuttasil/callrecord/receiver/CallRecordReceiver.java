@@ -70,9 +70,7 @@ public class CallRecordReceiver extends PhoneCallReceiver {
     }
 
     private void startRecord(Context context, String seed, String phoneNumber) {
-
         try {
-
             boolean isSaveFile = PrefsHelper.readPrefBool(context, CallRecord.PREF_SAVE_FILE);
             Log.i(TAG, "isSaveFile: " + isSaveFile);
 
@@ -140,38 +138,53 @@ public class CallRecordReceiver extends PhoneCallReceiver {
 
             audiofile = File.createTempFile(file_name, suffix, sampleDir);
 
+            if (recorder != null) {
+                recorder.stop();
+                recorder.release();
+                recorder = null;
+            }
+
             recorder = new MediaRecorder();
             recorder.setAudioSource(audio_source);
             recorder.setOutputFormat(output_format);
             recorder.setAudioEncoder(audio_encoder);
             recorder.setOutputFile(audiofile.getAbsolutePath());
 
+            recorder.setOnErrorListener(new MediaRecorder.OnErrorListener() {
+                @Override
+                public void onError(MediaRecorder mediaRecorder, int i, int i1) {
+                    Log.i("CallRecord", i + "");
+                    Log.i("CallRecord", i1 + "");
+                }
+            });
+
             recorder.prepare();
-            //Thread.sleep(2000);
             recorder.start();
 
             isRecordStarted = true;
             onRecordingStarted(context, callRecord, audiofile);
 
             Log.i(TAG, "record start");
-
         } catch (IllegalStateException | IOException e) {
             e.printStackTrace();
         }
     }
 
     private void stopRecord(Context context) {
-        if (recorder != null && isRecordStarted) {
+        try {
+            if (recorder != null && isRecordStarted) {
+                recorder.stop();
+                recorder.reset();
+                recorder.release();
+                recorder = null;
 
-            recorder.stop();
-            recorder.reset();
-            recorder.release();
-            recorder = null;
+                isRecordStarted = false;
+                onRecordingFinished(context, callRecord, audiofile);
 
-            isRecordStarted = false;
-            onRecordingFinished(context, callRecord, audiofile);
-
-            Log.i(TAG, "record stop");
+                Log.i(TAG, "record stop");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
