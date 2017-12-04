@@ -1,12 +1,13 @@
 # Anroid Call Recorder
 
+[![](https://jitpack.io/v/aykuttasil/CallRecorder.svg)](https://jitpack.io/#aykuttasil/CallRecorder)
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-Call%20Recorder-brightgreen.svg?style=flat)](http://android-arsenal.com/details/1/4544)
 
 Android incomig and outgoing call recorder at any time.
 
 # How to Use
 
-```
+```java
 callRecord = new CallRecord.Builder(this)
        .setRecordFileName("RecordFileName")
        .setRecordDirName("RecordDirName")
@@ -23,14 +24,14 @@ callRecord.startCallReceiver();
 
 OR
 
-```
+```java
 callRecord = CallRecord.init(this);
 ```
 
 
 **Stop CallRecord**
 
-```
+```java
 callRecord.stopCallReceiver();
 ```
 
@@ -39,7 +40,7 @@ callRecord.stopCallReceiver();
 
 If you wish run in Service;
 
-```
+```java
 callRecord = new CallRecord.Builder(this)
    .setRecordFileName("RecordFileName")
    .setRecordDirName("RecordDirName")
@@ -59,13 +60,13 @@ callRecord.startCallRecordService();
 
 If you wish stop save CallRecord file;
 
-```
+```java
 callRecord.disableSaveFile();
 ```
 
 and
 
-```
+```java
 callRecord.enableSaveFile();
 ```
 
@@ -73,15 +74,15 @@ callRecord.enableSaveFile();
 
 If you wish change save file name after initialize CallRecorder,
 
-```
+```java
 callRecord.changeRecordFileName("NewFileName");
 ```
 or
-```
+```java
 callRecord.changeRecordDirName("NewDirName");
 ```
 or
-```
+```java
 callRecord.changeRecordDirPath("NewDirPath");
 ```
 
@@ -90,7 +91,7 @@ callRecord.changeRecordDirPath("NewDirPath");
 
 **Custom CallRecordReceiver**
 
-```
+```java
 callRecord.changeReceiver(new MyCallRecordReceiver(callRecord));
 ```
 
@@ -101,8 +102,18 @@ Gradle
 
 Add it as a dependency in your app's build.gradle file
 
+```groovy
+	allprojects {
+		repositories {
+			...
+			maven { url 'https://jitpack.io' }
+		}
+	}
+
 ```
-compile 'com.aykuttasil:callrecord:1.2.4'
+
+```groovy
+compile 'com.github.aykuttasil:CallRecorder:1.2.6'
 
 ```
 
