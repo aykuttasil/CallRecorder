@@ -79,6 +79,50 @@ public class CallRecordReceiver extends PhoneCallReceiver {
                 return;
             }
 
+            if (isRecordStarted) {
+                try {
+                    recorder.stop();  // stop the recording
+                } catch (RuntimeException e) {
+                    // RuntimeException is thrown when stop() is called immediately after start().
+                    // In this case the output file is not properly constructed ans should be deleted.
+                    Log.d(TAG, "RuntimeException: stop() is called immediately after start()");
+                    //noinspection ResultOfMethodCallIgnored
+                    audiofile.delete();
+                }
+                releaseMediaRecorder();
+                isRecordStarted = false;
+            } else {
+                if (prepareAudioRecorder(context, seed, phoneNumber)) {
+                    recorder.start();
+                    isRecordStarted = true;
+                    onRecordingStarted(context, callRecord, audiofile);
+                    Log.i(TAG, "record start");
+                } else {
+                    releaseMediaRecorder();
+                }
+                //new MediaPrepareTask().execute(null, null, null);
+            }
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void stopRecord(Context context) {
+        try {
+            if (recorder != null && isRecordStarted) {
+                releaseMediaRecorder();
+                isRecordStarted = false;
+                onRecordingFinished(context, callRecord, audiofile);
+                Log.i(TAG, "record stop");
+            }
+        } catch (Exception e) {
+            releaseMediaRecorder();
+            e.printStackTrace();
+        }
+    }
+
+    private boolean prepareAudioRecorder(Context context, String seed, String phoneNumber) {
+        try {
             String file_name = PrefsHelper.readPrefString(context, CallRecord.PREF_FILE_NAME);
             String dir_path = PrefsHelper.readPrefString(context, CallRecord.PREF_DIR_PATH);
             String dir_name = PrefsHelper.readPrefString(context, CallRecord.PREF_DIR_NAME);
@@ -93,7 +137,6 @@ public class CallRecordReceiver extends PhoneCallReceiver {
             if (!sampleDir.exists()) {
                 sampleDir.mkdirs();
             }
-
 
             StringBuilder fileNameBuilder = new StringBuilder();
             fileNameBuilder.append(file_name);
@@ -138,18 +181,11 @@ public class CallRecordReceiver extends PhoneCallReceiver {
 
             audiofile = File.createTempFile(file_name, suffix, sampleDir);
 
-            if (recorder != null) {
-                recorder.stop();
-                recorder.release();
-                recorder = null;
-            }
-
             recorder = new MediaRecorder();
             recorder.setAudioSource(audio_source);
             recorder.setOutputFormat(output_format);
             recorder.setAudioEncoder(audio_encoder);
             recorder.setOutputFile(audiofile.getAbsolutePath());
-
             recorder.setOnErrorListener(new MediaRecorder.OnErrorListener() {
                 @Override
                 public void onError(MediaRecorder mediaRecorder, int i, int i1) {
@@ -158,34 +194,55 @@ public class CallRecordReceiver extends PhoneCallReceiver {
                 }
             });
 
-            recorder.prepare();
-            recorder.start();
-
-            isRecordStarted = true;
-            onRecordingStarted(context, callRecord, audiofile);
-
-            Log.i(TAG, "record start");
-        } catch (IllegalStateException | IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void stopRecord(Context context) {
-        try {
-            if (recorder != null && isRecordStarted) {
-                recorder.stop();
-                recorder.reset();
-                recorder.release();
-                recorder = null;
-
-                isRecordStarted = false;
-                onRecordingFinished(context, callRecord, audiofile);
-
-                Log.i(TAG, "record stop");
+            try {
+                recorder.prepare();
+            } catch (IllegalStateException e) {
+                Log.d(TAG, "IllegalStateException preparing MediaRecorder: " + e.getMessage());
+                releaseMediaRecorder();
+                return false;
+            } catch (IOException e) {
+                Log.d(TAG, "IOException preparing MediaRecorder: " + e.getMessage());
+                releaseMediaRecorder();
+                return false;
             }
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
         }
     }
+
+    private void releaseMediaRecorder() {
+        if (recorder != null) {
+            recorder.reset();
+            recorder.release();
+            recorder = null;
+        }
+    }
+
+    /*
+    class MediaPrepareTask extends AsyncTask<Void, Void, Boolean> {
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            if (prepareAudioRecorder(, "", "")) {
+                // Camera is available and unlocked, MediaRecorder is prepared,
+                // now you can start recording
+                recorder.start();
+                Log.i(TAG, "record start");
+            } else {
+                // prepare didn't work, release the camera
+                releaseMediaRecorder();
+                return false;
+            }
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            isRecordStarted = true;
+            onRecordingStarted(, callRecord, audiofile);
+        }
+    }
+    */
 
 }
