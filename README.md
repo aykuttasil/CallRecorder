@@ -103,20 +103,17 @@ Gradle
 Add it as a dependency in your app's build.gradle file
 
 ```groovy
-	allprojects {
-		repositories {
-			...
-			maven { url 'https://jitpack.io' }
-		}
+allprojects {
+	repositories {
+	...
+	maven { url 'https://jitpack.io' }
 	}
-
+}
 ```
 
 ```groovy
-compile 'com.github.aykuttasil:CallRecorder:1.2.6'
-
+compile 'com.github.aykuttasil:CallRecorder:$lastVersion'
 ```
-
 
 # Sample
 
