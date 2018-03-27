@@ -104,8 +104,9 @@ Add it as a dependency in your app's build.gradle file
 
 ```groovy
 allprojects {
+
 	repositories {
-	...
+
 	maven { url 'https://jitpack.io' }
 	}
 }
