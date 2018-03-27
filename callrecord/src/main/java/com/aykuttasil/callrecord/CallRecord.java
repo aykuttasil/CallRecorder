@@ -62,7 +62,9 @@ public class CallRecord {
 
     public void stopCallReceiver() {
         try {
-            mContext.unregisterReceiver(mCallRecordReceiver);
+            if (mCallRecordReceiver != null) {
+                mContext.unregisterReceiver(mCallRecordReceiver);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

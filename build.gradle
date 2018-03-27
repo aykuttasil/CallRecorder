@@ -32,7 +32,7 @@ task clean(type: Delete) {
 ext {
     sdk = 27
     minSdk = 17
-    libraryVersion = "1.2.5"
-    libraryVersionCode = 17
-    supportVersion = "27.0.1"
+    libraryVersion = "1.2.8"
+    libraryVersionCode = 18
+    supportVersion = "27.1.0"
 }

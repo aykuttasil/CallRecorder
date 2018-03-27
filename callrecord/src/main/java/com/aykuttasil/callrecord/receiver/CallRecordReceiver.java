@@ -104,6 +104,13 @@ public class CallRecordReceiver extends PhoneCallReceiver {
             }
         } catch (IllegalStateException e) {
             e.printStackTrace();
+            releaseMediaRecorder();
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            releaseMediaRecorder();
+        } catch (Exception e) {
+            e.printStackTrace();
+            releaseMediaRecorder();
         }
     }
 
@@ -189,8 +196,7 @@ public class CallRecordReceiver extends PhoneCallReceiver {
             recorder.setOnErrorListener(new MediaRecorder.OnErrorListener() {
                 @Override
                 public void onError(MediaRecorder mediaRecorder, int i, int i1) {
-                    Log.i("CallRecord", i + "");
-                    Log.i("CallRecord", i1 + "");
+
                 }
             });
 
