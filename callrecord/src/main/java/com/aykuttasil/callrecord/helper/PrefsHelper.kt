@@ -8,19 +8,18 @@ import android.preference.PreferenceManager
  * Created by aykutasil on 8.12.2016.
  */
 
-class PrefsHelper {
+class PrefsHelper private constructor(){
 
-    var preference: SharedPreferences? = null
-        private set
+    lateinit var preference: SharedPreferences
 
     val prefEditor: SharedPreferences.Editor
-        get() = preference!!.edit()
+        get() = preference.edit()
 
-    constructor(context: Context, pref_name: String) {
-        preference = context.getSharedPreferences(pref_name, Context.MODE_PRIVATE)
+    constructor(context: Context, prefName: String) : this() {
+        preference = context.getSharedPreferences(prefName, Context.MODE_PRIVATE)
     }
 
-    constructor(context: Context) {
+    constructor(context: Context) : this() {
         preference = getDefaultPreference(context)
     }
 
@@ -39,33 +38,27 @@ class PrefsHelper {
         }
 
         fun readPrefString(context: Context, key: String): String? {
-            return PrefsHelper(context).preference!!.getString(key, DEFAULT_STRING_VALUE)
+            return PrefsHelper(context).preference.getString(key, DEFAULT_STRING_VALUE)
         }
 
-        //
         fun writePrefInt(context: Context, key: String, value: Int) {
             PrefsHelper(context).prefEditor.putInt(key, value).commit()
         }
 
         fun readPrefInt(context: Context, key: String): Int {
-            return PrefsHelper(context).preference!!.getInt(key, DEFAULT_INT_VALUE)
+            return PrefsHelper(context).preference.getInt(key, DEFAULT_INT_VALUE)
         }
-        //
 
-        //
         fun writePrefBool(context: Context, key: String, value: Boolean) {
             PrefsHelper(context).prefEditor.putBoolean(key, value).commit()
         }
 
         fun readPrefBool(context: Context, key: String): Boolean {
-            return PrefsHelper(context).preference!!.getBoolean(key, DEFAULT_BOOLEAN_VALUE)
+            return PrefsHelper(context).preference.getBoolean(key, DEFAULT_BOOLEAN_VALUE)
         }
-        //
 
         fun clearPreference(context: Context) {
-            PrefsHelper(context).preference!!.edit().clear().apply()
-
+            PrefsHelper(context).preference.edit().clear().apply()
         }
     }
-
 }

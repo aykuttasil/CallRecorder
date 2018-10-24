@@ -14,7 +14,16 @@ import java.util.*
  */
 open class CallRecordReceiver(private var callRecord: CallRecord) : PhoneCallReceiver() {
 
-    private var audiofile: File? = null
+    companion object {
+        private val TAG = CallRecordReceiver::class.java.simpleName
+
+        const val ACTION_IN = "android.intent.action.PHONE_STATE"
+        const val ACTION_OUT = "android.intent.action.NEW_OUTGOING_CALL"
+        const val EXTRA_PHONE_NUMBER = "android.intent.extra.PHONE_NUMBER"
+        private var recorder: MediaRecorder? = null
+    }
+
+    private var audioFile: File? = null
     private var isRecordStarted = false
 
     override fun onIncomingCallReceived(context: Context, number: String?, start: Date) {
@@ -58,13 +67,12 @@ open class CallRecordReceiver(private var callRecord: CallRecord) : PhoneCallRec
 
             if (isRecordStarted) {
                 try {
-                    recorder!!.stop()  // stop the recording
+                    recorder?.stop()  // stop the recording
                 } catch (e: RuntimeException) {
                     // RuntimeException is thrown when stop() is called immediately after start().
                     // In this case the output file is not properly constructed ans should be deleted.
                     Log.d(TAG, "RuntimeException: stop() is called immediately after start()")
-
-                    audiofile!!.delete()
+                    audioFile?.delete()
                 }
 
                 releaseMediaRecorder()
@@ -73,12 +81,11 @@ open class CallRecordReceiver(private var callRecord: CallRecord) : PhoneCallRec
                 if (prepareAudioRecorder(context, seed, phoneNumber)) {
                     recorder!!.start()
                     isRecordStarted = true
-                    onRecordingStarted(context, callRecord, audiofile)
+                    onRecordingStarted(context, callRecord, audioFile)
                     Log.i(TAG, "record start")
                 } else {
                     releaseMediaRecorder()
                 }
-                //new MediaPrepareTask().execute(null, null, null);
             }
         } catch (e: IllegalStateException) {
             e.printStackTrace()
@@ -90,7 +97,6 @@ open class CallRecordReceiver(private var callRecord: CallRecord) : PhoneCallRec
             e.printStackTrace()
             releaseMediaRecorder()
         }
-
     }
 
     private fun stopRecord(context: Context) {
@@ -98,14 +104,13 @@ open class CallRecordReceiver(private var callRecord: CallRecord) : PhoneCallRec
             if (recorder != null && isRecordStarted) {
                 releaseMediaRecorder()
                 isRecordStarted = false
-                onRecordingFinished(context, callRecord, audiofile)
+                onRecordingFinished(context, callRecord, audioFile)
                 Log.i(TAG, "record stop")
             }
         } catch (e: Exception) {
             releaseMediaRecorder()
             e.printStackTrace()
         }
-
     }
 
     private fun prepareAudioRecorder(context: Context, seed: String, phoneNumber: String?): Boolean {
@@ -139,7 +144,6 @@ open class CallRecordReceiver(private var callRecord: CallRecord) : PhoneCallRec
                 fileNameBuilder.append("_")
             }
 
-
             file_name = fileNameBuilder.toString()
 
             var suffix = ""
@@ -161,14 +165,14 @@ open class CallRecordReceiver(private var callRecord: CallRecord) : PhoneCallRec
                 }
             }
 
-            audiofile = File.createTempFile(file_name, suffix, sampleDir)
+            audioFile = File.createTempFile(file_name, suffix, sampleDir)
 
             recorder = MediaRecorder()
             recorder?.apply {
                 setAudioSource(audio_source)
                 setOutputFormat(output_format)
                 setAudioEncoder(audio_encoder)
-                setOutputFile(audiofile!!.absolutePath)
+                setOutputFile(audioFile!!.absolutePath)
                 setOnErrorListener { mediaRecorder, i, i1 -> }
             }
 
@@ -189,7 +193,6 @@ open class CallRecordReceiver(private var callRecord: CallRecord) : PhoneCallRec
             e.printStackTrace()
             return false
         }
-
     }
 
     private fun releaseMediaRecorder() {
@@ -198,14 +201,5 @@ open class CallRecordReceiver(private var callRecord: CallRecord) : PhoneCallRec
             release()
         }
         recorder = null
-    }
-
-    companion object {
-        private val TAG = CallRecordReceiver::class.java.simpleName
-
-        const val ACTION_IN = "android.intent.action.PHONE_STATE"
-        const val ACTION_OUT = "android.intent.action.NEW_OUTGOING_CALL"
-        const val EXTRA_PHONE_NUMBER = "android.intent.extra.PHONE_NUMBER"
-        private var recorder: MediaRecorder? = null
     }
 }
