@@ -20,11 +20,11 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    androidTestCompile('androidx.test.espresso:espresso-core:3.1.0-beta02', {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0-beta02', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'androidx.appcompat:appcompat:1.0.0'
-    testCompile 'junit:junit:4.12'
-    compile project(':callrecord')
+    testImplementation 'junit:junit:4.12'
+    implementation 'androidx.appcompat:appcompat:1.0.0'
+    implementation project(':callrecord')
 }

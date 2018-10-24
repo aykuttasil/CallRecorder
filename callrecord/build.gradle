@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion project.sdk
@@ -21,12 +22,13 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestCompile('androidx.test.espresso:espresso-core:3.1.0-beta02', {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0-beta02', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'androidx.appcompat:appcompat:1.0.0'
-    testCompile 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.12'
+    implementation 'androidx.appcompat:appcompat:1.0.0'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 
 
@@ -59,6 +61,8 @@ if (project.rootProject.file('local.properties').exists()) {
     apply from: rootProject.file('gradle/install-v1.gradle')
     apply from: rootProject.file('gradle/bintray-android-v1.gradle')
 }
-
+repositories {
+    mavenCentral()
+}
 
 // ./gradlew clean install bintrayUpload

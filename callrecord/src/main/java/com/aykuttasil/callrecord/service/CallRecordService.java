@@ -3,11 +3,12 @@ package com.aykuttasil.callrecord.service;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
-import androidx.annotation.Nullable;
 import android.util.Log;
 
 import com.aykuttasil.callrecord.CallRecord;
 import com.aykuttasil.callrecord.helper.PrefsHelper;
+
+import androidx.annotation.Nullable;
 
 /**
  * Created by aykutasil on 19.10.2016.
@@ -36,14 +37,14 @@ public class CallRecordService extends Service {
 
         Log.i(TAG, "onStartCommand()");
 
-        String file_name = PrefsHelper.readPrefString(this, CallRecord.PREF_FILE_NAME);
-        String dir_path = PrefsHelper.readPrefString(this, CallRecord.PREF_DIR_PATH);
-        String dir_name = PrefsHelper.readPrefString(this, CallRecord.PREF_DIR_NAME);
-        boolean show_seed = PrefsHelper.readPrefBool(this, CallRecord.PREF_SHOW_SEED);
-        boolean show_phone_number = PrefsHelper.readPrefBool(this, CallRecord.PREF_SHOW_PHONE_NUMBER);
-        int output_format = PrefsHelper.readPrefInt(this, CallRecord.PREF_OUTPUT_FORMAT);
-        int audio_source = PrefsHelper.readPrefInt(this, CallRecord.PREF_AUDIO_SOURCE);
-        int audio_encoder = PrefsHelper.readPrefInt(this, CallRecord.PREF_AUDIO_ENCODER);
+        String file_name = PrefsHelper.Companion.readPrefString(this, CallRecord.PREF_FILE_NAME);
+        String dir_path = PrefsHelper.Companion.readPrefString(this, CallRecord.PREF_DIR_PATH);
+        String dir_name = PrefsHelper.Companion.readPrefString(this, CallRecord.PREF_DIR_NAME);
+        boolean show_seed = PrefsHelper.Companion.readPrefBool(this, CallRecord.PREF_SHOW_SEED);
+        boolean show_phone_number = PrefsHelper.Companion.readPrefBool(this, CallRecord.PREF_SHOW_PHONE_NUMBER);
+        int output_format = PrefsHelper.Companion.readPrefInt(this, CallRecord.PREF_OUTPUT_FORMAT);
+        int audio_source = PrefsHelper.Companion.readPrefInt(this, CallRecord.PREF_AUDIO_SOURCE);
+        int audio_encoder = PrefsHelper.Companion.readPrefInt(this, CallRecord.PREF_AUDIO_ENCODER);
 
         mCallRecord = new CallRecord.Builder(this)
                 .setRecordFileName(file_name)

@@ -71,7 +71,7 @@ public class CallRecordReceiver extends PhoneCallReceiver {
 
     private void startRecord(Context context, String seed, String phoneNumber) {
         try {
-            boolean isSaveFile = PrefsHelper.readPrefBool(context, CallRecord.PREF_SAVE_FILE);
+            boolean isSaveFile = PrefsHelper.Companion.readPrefBool(context, CallRecord.PREF_SAVE_FILE);
             Log.i(TAG, "isSaveFile: " + isSaveFile);
 
             // dosya kayıt edilsin mi?
@@ -130,14 +130,14 @@ public class CallRecordReceiver extends PhoneCallReceiver {
 
     private boolean prepareAudioRecorder(Context context, String seed, String phoneNumber) {
         try {
-            String file_name = PrefsHelper.readPrefString(context, CallRecord.PREF_FILE_NAME);
-            String dir_path = PrefsHelper.readPrefString(context, CallRecord.PREF_DIR_PATH);
-            String dir_name = PrefsHelper.readPrefString(context, CallRecord.PREF_DIR_NAME);
-            boolean show_seed = PrefsHelper.readPrefBool(context, CallRecord.PREF_SHOW_SEED);
-            boolean show_phone_number = PrefsHelper.readPrefBool(context, CallRecord.PREF_SHOW_PHONE_NUMBER);
-            int output_format = PrefsHelper.readPrefInt(context, CallRecord.PREF_OUTPUT_FORMAT);
-            int audio_source = PrefsHelper.readPrefInt(context, CallRecord.PREF_AUDIO_SOURCE);
-            int audio_encoder = PrefsHelper.readPrefInt(context, CallRecord.PREF_AUDIO_ENCODER);
+            String file_name = PrefsHelper.Companion.readPrefString(context, CallRecord.PREF_FILE_NAME);
+            String dir_path = PrefsHelper.Companion.readPrefString(context, CallRecord.PREF_DIR_PATH);
+            String dir_name = PrefsHelper.Companion.readPrefString(context, CallRecord.PREF_DIR_NAME);
+            boolean show_seed = PrefsHelper.Companion.readPrefBool(context, CallRecord.PREF_SHOW_SEED);
+            boolean show_phone_number = PrefsHelper.Companion.readPrefBool(context, CallRecord.PREF_SHOW_PHONE_NUMBER);
+            int output_format = PrefsHelper.Companion.readPrefInt(context, CallRecord.PREF_OUTPUT_FORMAT);
+            int audio_source = PrefsHelper.Companion.readPrefInt(context, CallRecord.PREF_AUDIO_SOURCE);
+            int audio_encoder = PrefsHelper.Companion.readPrefInt(context, CallRecord.PREF_AUDIO_ENCODER);
 
             File sampleDir = new File(dir_path + "/" + dir_name);
 
