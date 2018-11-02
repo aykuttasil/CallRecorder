@@ -123,8 +123,8 @@ You can see sample project in app folder.
 
 
 # Thank You
-[Luong Vo](https://github.com/luongvo)
-[Mirza Zulfan](https://github.com/mirzazulfan)
+- [Luong Vo](https://github.com/luongvo)
+- [Mirza Zulfan](https://github.com/mirzazulfan)
 
 
 
