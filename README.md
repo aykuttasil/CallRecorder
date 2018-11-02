@@ -1,3 +1,7 @@
+<h1 align=center>
+<img src="logo/1024.svg" width=100%>
+</h1>
+
 # Anroid Call Recorder
 
 [![](https://jitpack.io/v/aykuttasil/CallRecorder.svg)](https://jitpack.io/#aykuttasil/CallRecorder)
