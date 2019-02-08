@@ -1,7 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.aykuttasil.callrecord">
 
-
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
@@ -12,10 +11,9 @@
         android:label="@string/app_name"
         android:supportsRtl="true">
 
-
         <service
             android:name=".service.CallRecordService"
-            android:exported="true" />
+            android:exported="false" />
 
         <!--
         <receiver android:name=".CallReceiver" >
