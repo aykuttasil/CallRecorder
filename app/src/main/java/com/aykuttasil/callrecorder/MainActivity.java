@@ -2,11 +2,12 @@ package com.aykuttasil.callrecorder;
 
 import android.media.MediaRecorder;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 
 import com.aykuttasil.callrecord.CallRecord;
+import com.aykuttasil.callrecord.helper.LogUtils;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -20,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         //callRecord = CallRecord.init(this);
         callRecord = new CallRecord.Builder(this)
+                .setLogEnable(true)
                 .setRecordFileName("CallRecorderTestFile")
                 .setRecordDirName("CallRecorderTest")
                 .setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION)
@@ -46,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void StartCallRecordClick(View view) {
-        Log.i("CallRecord", "StartCallRecordClick");
+        LogUtils.i(TAG, "StartCallRecordClick");
         callRecord.startCallReceiver();
 
         //callRecord.enableSaveFile();
@@ -54,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void StopCallRecordClick(View view) {
-        Log.i("CallRecord", "StopCallRecordClick");
+        LogUtils.i(TAG, "StopCallRecordClick");
         callRecord.stopCallReceiver();
 
         //callRecord.disableSaveFile();

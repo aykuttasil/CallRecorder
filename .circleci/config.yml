@@ -1,0 +1,62 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/code
+    docker:
+      - image: circleci/android:api-28-alpha
+    environment:
+      JVM_OPTS: -Xmx3200m
+    steps:
+      - checkout
+      - run:
+          command: echo "Current Branch:" ${CIRCLE_BRANCH}
+      - restore_cache:
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+      - run:
+          name: Download Dependencies
+          command: ./gradlew androidDependencies
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+      - run:
+          name: Release build
+          command: ./gradlew callrecord:assembleRelease --no-daemon --stacktrace
+      - persist_to_workspace:
+          root: callrecord/build/outputs/
+          paths:
+            - aar/*
+      - store_artifacts:
+          path: callrecord/build/outputs/aar/
+          destination: artifacts/
+      - run:
+          name: Test
+          command: ./gradlew callrecord:testRelease
+      - store_artifacts:
+          path: callrecord/build/reports/tests/
+          destination: test/
+      - store_test_results:
+          path: callrecord/build/test-results
+  publish-github-release:
+    docker:
+      - image: cibuilds/github:0.10
+    steps:
+      - attach_workspace:
+          at: callrecord/build/outputs/artifacts
+      - run:
+          command: |
+            echo $(ls)
+            pwd
+      - run:
+          name: "Publish Release on GitHub"
+          command: |
+            VERSION=v1.5.2
+            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} callrecord/build/outputs/artifacts
+workflows:
+  version: 2
+  workflow:
+    jobs:
+    - build
+    - publish-github-release:
+        requires:
+          - build

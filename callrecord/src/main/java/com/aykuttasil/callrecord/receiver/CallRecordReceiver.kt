@@ -2,16 +2,13 @@ package com.aykuttasil.callrecord.receiver
 
 import android.content.Context
 import android.media.MediaRecorder
-import android.util.Log
 import com.aykuttasil.callrecord.CallRecord
+import com.aykuttasil.callrecord.helper.LogUtils
 import com.aykuttasil.callrecord.helper.PrefsHelper
 import java.io.File
 import java.io.IOException
-import java.util.*
+import java.util.Date
 
-/**
- * Created by aykutasil on 19.10.2016.
- */
 open class CallRecordReceiver(private var callRecord: CallRecord) : PhoneCallReceiver() {
 
     companion object {
@@ -27,7 +24,6 @@ open class CallRecordReceiver(private var callRecord: CallRecord) : PhoneCallRec
     private var isRecordStarted = false
 
     override fun onIncomingCallReceived(context: Context, number: String?, start: Date) {
-
     }
 
     override fun onIncomingCallAnswered(context: Context, number: String?, start: Date) {
@@ -47,7 +43,6 @@ open class CallRecordReceiver(private var callRecord: CallRecord) : PhoneCallRec
     }
 
     override fun onMissedCall(context: Context, number: String?, start: Date) {
-
     }
 
     // Derived classes could override these to respond to specific events of interest
@@ -58,7 +53,7 @@ open class CallRecordReceiver(private var callRecord: CallRecord) : PhoneCallRec
     private fun startRecord(context: Context, seed: String, phoneNumber: String?) {
         try {
             val isSaveFile = PrefsHelper.readPrefBool(context, CallRecord.PREF_SAVE_FILE)
-            Log.i(TAG, "isSaveFile: $isSaveFile")
+            LogUtils.i(TAG, "isSaveFile: $isSaveFile")
 
             // is save file?
             if (!isSaveFile) {
@@ -71,7 +66,7 @@ open class CallRecordReceiver(private var callRecord: CallRecord) : PhoneCallRec
                 } catch (e: RuntimeException) {
                     // RuntimeException is thrown when stop() is called immediately after start().
                     // In this case the output file is not properly constructed ans should be deleted.
-                    Log.d(TAG, "RuntimeException: stop() is called immediately after start()")
+                    LogUtils.d(TAG, "RuntimeException: stop() is called immediately after start()")
                     audioFile?.delete()
                 }
 
@@ -82,7 +77,7 @@ open class CallRecordReceiver(private var callRecord: CallRecord) : PhoneCallRec
                     recorder!!.start()
                     isRecordStarted = true
                     onRecordingStarted(context, callRecord, audioFile)
-                    Log.i(TAG, "record start")
+                    LogUtils.i(TAG, "record start")
                 } else {
                     releaseMediaRecorder()
                 }
@@ -105,7 +100,7 @@ open class CallRecordReceiver(private var callRecord: CallRecord) : PhoneCallRec
                 releaseMediaRecorder()
                 isRecordStarted = false
                 onRecordingFinished(context, callRecord, audioFile)
-                Log.i(TAG, "record stop")
+                LogUtils.i(TAG, "record stop")
             }
         } catch (e: Exception) {
             releaseMediaRecorder()
@@ -113,41 +108,57 @@ open class CallRecordReceiver(private var callRecord: CallRecord) : PhoneCallRec
         }
     }
 
-    private fun prepareAudioRecorder(context: Context, seed: String, phoneNumber: String?): Boolean {
+    private fun prepareAudioRecorder(
+        context: Context, seed: String, phoneNumber: String?
+    ): Boolean {
         try {
+
+            var fileName = PrefsHelper.readPrefString(context, CallRecord.PREF_FILE_NAME)
+            val dirPath = PrefsHelper.readPrefString(context, CallRecord.PREF_DIR_PATH)
+            val dirName = PrefsHelper.readPrefString(context, CallRecord.PREF_DIR_NAME)
+            val showSeed = PrefsHelper.readPrefBool(context, CallRecord.PREF_SHOW_SEED)
+            val showPhoneNumber =
+                PrefsHelper.readPrefBool(context, CallRecord.PREF_SHOW_PHONE_NUMBER)
+            val outputFormat = PrefsHelper.readPrefInt(context, CallRecord.PREF_OUTPUT_FORMAT)
+            val audioSource = PrefsHelper.readPrefInt(context, CallRecord.PREF_AUDIO_SOURCE)
+            val audioEncoder = PrefsHelper.readPrefInt(context, CallRecord.PREF_AUDIO_ENCODER)
+
+            /*
             var file_name = PrefsHelper.readPrefString(context, CallRecord.PREF_FILE_NAME)
             val dir_path = PrefsHelper.readPrefString(context, CallRecord.PREF_DIR_PATH)
             val dir_name = PrefsHelper.readPrefString(context, CallRecord.PREF_DIR_NAME)
             val show_seed = PrefsHelper.readPrefBool(context, CallRecord.PREF_SHOW_SEED)
-            val show_phone_number = PrefsHelper.readPrefBool(context, CallRecord.PREF_SHOW_PHONE_NUMBER)
+            val show_phone_number =
+                PrefsHelper.readPrefBool(context, CallRecord.PREF_SHOW_PHONE_NUMBER)
             val output_format = PrefsHelper.readPrefInt(context, CallRecord.PREF_OUTPUT_FORMAT)
             val audio_source = PrefsHelper.readPrefInt(context, CallRecord.PREF_AUDIO_SOURCE)
             val audio_encoder = PrefsHelper.readPrefInt(context, CallRecord.PREF_AUDIO_ENCODER)
+            */
 
-            val sampleDir = File("$dir_path/$dir_name")
+            val sampleDir = File("$dirPath/$dirName")
 
             if (!sampleDir.exists()) {
                 sampleDir.mkdirs()
             }
 
             val fileNameBuilder = StringBuilder()
-            fileNameBuilder.append(file_name)
+            fileNameBuilder.append(fileName)
             fileNameBuilder.append("_")
 
-            if (show_seed) {
+            if (showSeed) {
                 fileNameBuilder.append(seed)
                 fileNameBuilder.append("_")
             }
 
-            if (show_phone_number && phoneNumber != null) {
+            if (showPhoneNumber && phoneNumber != null) {
                 fileNameBuilder.append(phoneNumber)
                 fileNameBuilder.append("_")
             }
 
-            file_name = fileNameBuilder.toString()
+            fileName = fileNameBuilder.toString()
 
-            var suffix = ""
-            when (output_format) {
+            val suffix: String
+            when (outputFormat) {
                 MediaRecorder.OutputFormat.AMR_NB -> {
                     suffix = ".amr"
                 }
@@ -165,31 +176,32 @@ open class CallRecordReceiver(private var callRecord: CallRecord) : PhoneCallRec
                 }
             }
 
-            audioFile = File.createTempFile(file_name, suffix, sampleDir)
+            audioFile = File.createTempFile(fileName, suffix, sampleDir)
 
             recorder = MediaRecorder()
             recorder?.apply {
-                setAudioSource(audio_source)
-                setOutputFormat(output_format)
-                setAudioEncoder(audio_encoder)
+                setAudioSource(audioSource)
+                setOutputFormat(outputFormat)
+                setAudioEncoder(audioEncoder)
                 setOutputFile(audioFile!!.absolutePath)
-                setOnErrorListener { mediaRecorder, i, i1 -> }
+                setOnErrorListener { _, _, _ -> }
             }
 
             try {
                 recorder?.prepare()
             } catch (e: IllegalStateException) {
-                Log.d(TAG, "IllegalStateException preparing MediaRecorder: " + e.message)
+                LogUtils.d(TAG, "IllegalStateException preparing MediaRecorder: " + e.message)
                 releaseMediaRecorder()
                 return false
             } catch (e: IOException) {
-                Log.d(TAG, "IOException preparing MediaRecorder: " + e.message)
+                LogUtils.d(TAG, "IOException preparing MediaRecorder: " + e.message)
                 releaseMediaRecorder()
                 return false
             }
 
             return true
         } catch (e: Exception) {
+            LogUtils.e(e)
             e.printStackTrace()
             return false
         }

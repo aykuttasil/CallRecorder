@@ -4,11 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.telephony.TelephonyManager
-import java.util.*
-
-/**
- * Created by aykutasil on 22.12.2016.
- */
+import java.util.Date
 
 abstract class PhoneCallReceiver : BroadcastReceiver() {
 
@@ -22,12 +18,10 @@ abstract class PhoneCallReceiver : BroadcastReceiver() {
             savedNumber = number
             var state = 0
 
-            if (stateStr == TelephonyManager.EXTRA_STATE_IDLE) {
-                state = TelephonyManager.CALL_STATE_IDLE
-            } else if (stateStr == TelephonyManager.EXTRA_STATE_OFFHOOK) {
-                state = TelephonyManager.CALL_STATE_OFFHOOK
-            } else if (stateStr == TelephonyManager.EXTRA_STATE_RINGING) {
-                state = TelephonyManager.CALL_STATE_RINGING
+            when (stateStr) {
+                TelephonyManager.EXTRA_STATE_IDLE -> state = TelephonyManager.CALL_STATE_IDLE
+                TelephonyManager.EXTRA_STATE_OFFHOOK -> state = TelephonyManager.CALL_STATE_OFFHOOK
+                TelephonyManager.EXTRA_STATE_RINGING -> state = TelephonyManager.CALL_STATE_RINGING
             }
             onCallStateChanged(context, state, number)
         }
@@ -38,11 +32,15 @@ abstract class PhoneCallReceiver : BroadcastReceiver() {
 
     protected abstract fun onIncomingCallAnswered(context: Context, number: String?, start: Date)
 
-    protected abstract fun onIncomingCallEnded(context: Context, number: String?, start: Date, end: Date)
+    protected abstract fun onIncomingCallEnded(
+        context: Context, number: String?, start: Date, end: Date
+    )
 
     protected abstract fun onOutgoingCallStarted(context: Context, number: String?, start: Date)
 
-    protected abstract fun onOutgoingCallEnded(context: Context, number: String?, start: Date, end: Date)
+    protected abstract fun onOutgoingCallEnded(
+        context: Context, number: String?, start: Date, end: Date
+    )
 
     protected abstract fun onMissedCall(context: Context, number: String?, start: Date)
 
@@ -94,10 +92,10 @@ abstract class PhoneCallReceiver : BroadcastReceiver() {
     companion object {
 
         //The receiver will be recreated whenever android feels like it.  We need a static variable to remember data between instantiations
-
         private var lastState = TelephonyManager.CALL_STATE_IDLE
         private var callStartTime: Date = Date()
         private var isIncoming: Boolean = false
-        private var savedNumber: String? = null  //because the passed incoming is only valid in ringing
+        private var savedNumber: String? =
+            null  //because the passed incoming is only valid in ringing
     }
 }

@@ -5,15 +5,11 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.media.MediaRecorder
 import android.os.Environment
-import android.util.Log
-
+import com.aykuttasil.callrecord.helper.LogUtils
 import com.aykuttasil.callrecord.helper.PrefsHelper
 import com.aykuttasil.callrecord.receiver.CallRecordReceiver
 import com.aykuttasil.callrecord.service.CallRecordService
-
-/**
- * Created by aykutasil on 20.10.2016.
- */
+import timber.log.Timber
 
 class CallRecord private constructor(private val mContext: Context) {
     private var mCallRecordReceiver: CallRecordReceiver? = null
@@ -47,7 +43,7 @@ class CallRecord private constructor(private val mContext: Context) {
                 mContext.unregisterReceiver(mCallRecordReceiver)
             }
         } catch (e: Exception) {
-            e.printStackTrace()
+            LogUtils.e(e)
         }
     }
 
@@ -56,16 +52,16 @@ class CallRecord private constructor(private val mContext: Context) {
         intent.setClass(mContext, CallRecordService::class.java)
 
         mContext.startService(intent)
-        Log.i(TAG, "startService()")
+        LogUtils.i(TAG, "startService()")
     }
 
     fun enableSaveFile() {
         PrefsHelper.writePrefBool(mContext, PREF_SAVE_FILE, true)
-        Log.i("CallRecord", "Save file enabled")
+        LogUtils.i("CallRecord", "Save file enabled")
     }
 
     fun disableSaveFile() {
-        Log.i("CallRecord", "Save file disabled")
+        LogUtils.i("CallRecord", "Save file disabled")
         PrefsHelper.writePrefBool(mContext, PREF_SAVE_FILE, false)
     }
 
@@ -77,10 +73,9 @@ class CallRecord private constructor(private val mContext: Context) {
                 e.printStackTrace()
                 return
             }
-
         }
         PrefsHelper.writePrefString(mContext, PREF_FILE_NAME, newFileName)
-        Log.i("CallRecord", "New file name: $newFileName")
+        LogUtils.i("CallRecord", "New file name: $newFileName")
     }
 
     fun changeRecordDirName(newDirName: String?) {
@@ -91,10 +86,9 @@ class CallRecord private constructor(private val mContext: Context) {
                 e.printStackTrace()
                 return
             }
-
         }
         PrefsHelper.writePrefString(mContext, PREF_DIR_NAME, newDirName)
-        Log.i("CallRecord", "New dir name: $newDirName")
+        LogUtils.i("CallRecord", "New dir name: $newDirName")
     }
 
     fun changeRecordDirPath(newDirPath: String?) {
@@ -105,10 +99,9 @@ class CallRecord private constructor(private val mContext: Context) {
                 e.printStackTrace()
                 return
             }
-
         }
         PrefsHelper.writePrefString(mContext, PREF_DIR_PATH, newDirPath)
-        Log.i("CallRecord", "New dir path: $newDirPath")
+        LogUtils.i("CallRecord", "New dir path: $newDirPath")
     }
 
     fun changeReceiver(receiver: CallRecordReceiver) {
@@ -117,11 +110,11 @@ class CallRecord private constructor(private val mContext: Context) {
 
     class Builder(private val mContext: Context) {
 
-        val recordFileName: String?
-            get() = PrefsHelper.readPrefString(mContext, PREF_FILE_NAME)
+        val recordFileName: String
+            get() = PrefsHelper.readPrefString(mContext, PREF_FILE_NAME)!!
 
-        val recordDirName: String?
-            get() = PrefsHelper.readPrefString(mContext, PREF_DIR_NAME)
+        val recordDirName: String
+            get() = PrefsHelper.readPrefString(mContext, PREF_DIR_NAME)!!
 
         val audioSource: Int
             get() = PrefsHelper.readPrefInt(mContext, PREF_AUDIO_SOURCE)
@@ -138,8 +131,11 @@ class CallRecord private constructor(private val mContext: Context) {
         val isShowPhoneNumber: Boolean
             get() = PrefsHelper.readPrefBool(mContext, PREF_SHOW_PHONE_NUMBER)
 
-        val recordDirPath: String?
-            get() = PrefsHelper.readPrefString(mContext, PREF_DIR_PATH)
+        val recordDirPath: String
+            get() = PrefsHelper.readPrefString(mContext, PREF_DIR_PATH)!!
+
+        val logEnable: Boolean
+            get() = PrefsHelper.readPrefBool(mContext, PREF_LOG_ENABLE)
 
         init {
             PrefsHelper.writePrefString(mContext, PREF_FILE_NAME, "Record")
@@ -150,11 +146,17 @@ class CallRecord private constructor(private val mContext: Context) {
             PrefsHelper.writePrefInt(mContext, PREF_OUTPUT_FORMAT, MediaRecorder.OutputFormat.AMR_NB)
             PrefsHelper.writePrefBool(mContext, PREF_SHOW_SEED, true)
             PrefsHelper.writePrefBool(mContext, PREF_SHOW_PHONE_NUMBER, true)
+            PrefsHelper.writePrefBool(mContext, PREF_LOG_ENABLE, false)
         }
 
         fun build(): CallRecord {
             val callRecord = CallRecord(mContext)
             callRecord.enableSaveFile()
+
+            if (logEnable) {
+                Timber.plant(Timber.DebugTree())
+            }
+
             return callRecord
         }
 
@@ -168,11 +170,6 @@ class CallRecord private constructor(private val mContext: Context) {
             return this
         }
 
-        /**
-         * @param audioSource
-         * @return
-         * @see MediaRecorder.AudioSource
-         */
         fun setAudioSource(audioSource: Int): Builder {
             PrefsHelper.writePrefInt(mContext, PREF_AUDIO_SOURCE, audioSource)
             return this
@@ -188,18 +185,23 @@ class CallRecord private constructor(private val mContext: Context) {
             return this
         }
 
-        fun setShowSeed(showSeed: Boolean): Builder {
+        fun setShowSeed(showSeed: Boolean = true): Builder {
             PrefsHelper.writePrefBool(mContext, PREF_SHOW_SEED, showSeed)
             return this
         }
 
-        fun setShowPhoneNumber(showNumber: Boolean): Builder {
+        fun setShowPhoneNumber(showNumber: Boolean = true): Builder {
             PrefsHelper.writePrefBool(mContext, PREF_SHOW_PHONE_NUMBER, showNumber)
             return this
         }
 
         fun setRecordDirPath(recordDirPath: String?): Builder {
             PrefsHelper.writePrefString(mContext, PREF_DIR_PATH, recordDirPath)
+            return this
+        }
+
+        fun setLogEnable(isEnable: Boolean = false): Builder {
+            PrefsHelper.writePrefBool(mContext, PREF_LOG_ENABLE, isEnable)
             return this
         }
     }
@@ -217,6 +219,7 @@ class CallRecord private constructor(private val mContext: Context) {
         const val PREF_AUDIO_SOURCE = "PrefAudioSource"
         const val PREF_AUDIO_ENCODER = "PrefAudioEncoder"
         const val PREF_OUTPUT_FORMAT = "PrefOutputFormat"
+        const val PREF_LOG_ENABLE = "PrefLogEnable"
 
         fun initReceiver(context: Context): CallRecord {
             val callRecord = Builder(context).build()
