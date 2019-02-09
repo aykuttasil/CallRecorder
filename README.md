@@ -2,17 +2,18 @@
 <img src="logo/1024.svg" width=100%>
 </h1>
 
-# Anroid Call Recorder
+# Android Call Recorder
 
 [![](https://jitpack.io/v/aykuttasil/CallRecorder.svg)](https://jitpack.io/#aykuttasil/CallRecorder)
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-Call%20Recorder-brightgreen.svg?style=flat)](http://android-arsenal.com/details/1/4544)
 
-Android incomig and outgoing call recorder at any time.
+Android incoming and outgoing call recorder at any time.
 
 # How to Use
 
 ```java
 callRecord = new CallRecord.Builder(this)
+       .setLogEnable(true)
        .setRecordFileName("RecordFileName")
        .setRecordDirName("RecordDirName")
        .setRecordDirPath(Environment.getExternalStorageDirectory().getPath()) // optional & default value
