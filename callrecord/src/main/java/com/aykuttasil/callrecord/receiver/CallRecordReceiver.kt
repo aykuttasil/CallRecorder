@@ -46,9 +46,9 @@ open class CallRecordReceiver(private var callRecord: CallRecord) : PhoneCallRec
     }
 
     // Derived classes could override these to respond to specific events of interest
-    protected fun onRecordingStarted(context: Context, callRecord: CallRecord, audioFile: File?) {}
+    protected open fun onRecordingStarted(context: Context, callRecord: CallRecord, audioFile: File?) {}
 
-    protected fun onRecordingFinished(context: Context, callRecord: CallRecord, audioFile: File?) {}
+    protected open fun onRecordingFinished(context: Context, callRecord: CallRecord, audioFile: File?) {}
 
     private fun startRecord(context: Context, seed: String, phoneNumber: String?) {
         try {
@@ -112,7 +112,6 @@ open class CallRecordReceiver(private var callRecord: CallRecord) : PhoneCallRec
         context: Context, seed: String, phoneNumber: String?
     ): Boolean {
         try {
-
             var fileName = PrefsHelper.readPrefString(context, CallRecord.PREF_FILE_NAME)
             val dirPath = PrefsHelper.readPrefString(context, CallRecord.PREF_DIR_PATH)
             val dirName = PrefsHelper.readPrefString(context, CallRecord.PREF_DIR_NAME)
@@ -122,18 +121,6 @@ open class CallRecordReceiver(private var callRecord: CallRecord) : PhoneCallRec
             val outputFormat = PrefsHelper.readPrefInt(context, CallRecord.PREF_OUTPUT_FORMAT)
             val audioSource = PrefsHelper.readPrefInt(context, CallRecord.PREF_AUDIO_SOURCE)
             val audioEncoder = PrefsHelper.readPrefInt(context, CallRecord.PREF_AUDIO_ENCODER)
-
-            /*
-            var file_name = PrefsHelper.readPrefString(context, CallRecord.PREF_FILE_NAME)
-            val dir_path = PrefsHelper.readPrefString(context, CallRecord.PREF_DIR_PATH)
-            val dir_name = PrefsHelper.readPrefString(context, CallRecord.PREF_DIR_NAME)
-            val show_seed = PrefsHelper.readPrefBool(context, CallRecord.PREF_SHOW_SEED)
-            val show_phone_number =
-                PrefsHelper.readPrefBool(context, CallRecord.PREF_SHOW_PHONE_NUMBER)
-            val output_format = PrefsHelper.readPrefInt(context, CallRecord.PREF_OUTPUT_FORMAT)
-            val audio_source = PrefsHelper.readPrefInt(context, CallRecord.PREF_AUDIO_SOURCE)
-            val audio_encoder = PrefsHelper.readPrefInt(context, CallRecord.PREF_AUDIO_ENCODER)
-            */
 
             val sampleDir = File("$dirPath/$dirName")
 

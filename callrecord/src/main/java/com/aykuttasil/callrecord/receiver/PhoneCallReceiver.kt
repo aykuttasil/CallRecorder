@@ -90,7 +90,6 @@ abstract class PhoneCallReceiver : BroadcastReceiver() {
     }
 
     companion object {
-
         //The receiver will be recreated whenever android feels like it.  We need a static variable to remember data between instantiations
         private var lastState = TelephonyManager.CALL_STATE_IDLE
         private var callStartTime: Date = Date()
